@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+<title>NB - Blueberry muffin</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+<nav>
+<a href="index.html">Home</a>
+ | <a href="homelab.html">Homelab</a> | <a href="recipes.html" class="active">Recipes</a> | <a href="security.html">Security</a> | <a href="windows.html">Windows</a> | <a href="whoami.html">About</a>
+</nav>
+</header>
+
+<main>
+<article>
+<h1>Blueberry muffin</h1>
+<p class="date">2025-10-05</p>
+
+<!-- Recipe Scaler (only for Recipes category) -->
+<div class="recipe-scaler">
+<label for="base-ingredient-select">
+Scale by: 
+<select id="base-ingredient-select">
+  <option value="">-- Select ingredient --</option>
+</select>
+</label>
+<label for="scaler-input">
+I have <input type="number" id="scaler-input" value="" min="0.1" step="0.1" /> <span id="ingredient-unit">g</span>
+</label>
+<button id="scale-recipe">Scale Recipe</button>
+<button id="reset-recipe">Reset</button>
+</div>
+
+<h3 id="ingredients">Ingredients</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />80 g all-purpose flour</label></li>
+<li><label><input type="checkbox" />20 g whole wheat flour</label></li>
+<li><label><input type="checkbox" />50 g oat flour</label></li>
+<li><label><input type="checkbox" />1 egg</label></li>
+<li><label><input type="checkbox" />0.5 g salt</label></li>
+<li><label><input type="checkbox" />5 g sugar</label></li>
+<li><label><input type="checkbox" />150 g yogurt</label></li>
+<li><label><input type="checkbox" />160 g milk</label></li>
+<li><label><input type="checkbox" />40 g butter</label></li>
+<li><label><input type="checkbox" />70 g frozen blueberries</label></li>
+<li><label><input type="checkbox" />1.5 g baking powder</label></li>
+<li><label><input type="checkbox" />1 g baking soda</label></li>
+<li><label><input type="checkbox" />15 g ground baked
+flaxseed</label></li>
+</ul>
+<h3 id="steps">Steps</h3>
+<ol type="1">
+<li>Add all dry ingredients together</li>
+<li>Add all wet ingredients together</li>
+<li>Add all wet ingredienst to dry ingredients do not mix too much</li>
+<li>Add all frozen blueberries to the mix</li>
+<li>Put the mix in cupcake form</li>
+<li>Oven at 170 celcius for 25 minutes</li>
+</ol>
+</article>
+</main>
+
+<footer>
+<p>&copy; <span id="year"></span> Nathan Boone | Code by AI, Content by Me</p>
+</footer>
+
+<script src="script.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+</body>
+</html>

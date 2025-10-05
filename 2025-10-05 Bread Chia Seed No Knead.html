@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+<title>NB - Bread Chia Seed No Knead</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+<nav>
+<a href="index.html">Home</a>
+ | <a href="homelab.html">Homelab</a> | <a href="recipes.html" class="active">Recipes</a> | <a href="security.html">Security</a> | <a href="windows.html">Windows</a> | <a href="whoami.html">About</a>
+</nav>
+</header>
+
+<main>
+<article>
+<h1>Bread Chia Seed No Knead</h1>
+<p class="date">2025-10-05</p>
+
+<!-- Recipe Scaler (only for Recipes category) -->
+<div class="recipe-scaler">
+<label for="base-ingredient-select">
+Scale by: 
+<select id="base-ingredient-select">
+  <option value="">-- Select ingredient --</option>
+</select>
+</label>
+<label for="scaler-input">
+I have <input type="number" id="scaler-input" value="" min="0.1" step="0.1" /> <span id="ingredient-unit">g</span>
+</label>
+<button id="scale-recipe">Scale Recipe</button>
+<button id="reset-recipe">Reset</button>
+</div>
+
+<h3 id="ingredients">Ingredients</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />160 g bread flour</label></li>
+<li><label><input type="checkbox" />40 g oatmeal flour</label></li>
+<li><label><input type="checkbox" />120 g whole wheat flour</label></li>
+<li><label><input type="checkbox" />275 g water</label></li>
+<li><label><input type="checkbox" />2 g salt</label></li>
+<li><label><input type="checkbox" />5 g chia seeds</label></li>
+<li><label><input type="checkbox" />20 g water for chia seeds
+soaking</label></li>
+<li><label><input type="checkbox" />2 g instant dry yeast</label></li>
+<li><label><input type="checkbox" />30 g seed and nut mix</label></li>
+</ul>
+<h3 id="steps">Steps</h3>
+<ol type="1">
+<li>Make chia seed flour and soak in water</li>
+<li>Add flour, oatmeal flour and whole wheat flour togeher</li>
+<li>Add all water, mix until there is no dry remaining and mix
+everything together. Let it sit for 30 minutes</li>
+<li>Add instant dry yeast, mix</li>
+<li>Add salt, mix</li>
+<li>Sit for 30 minutes</li>
+<li>Add chia seeds, mix well</li>
+<li>Add nut mix, mix well</li>
+<li>Sit for 30 minutes</li>
+<li>Stretch and fold and sit for 30 minutes until it looks good</li>
+<li>Transfer to bread mold</li>
+<li>Let the bread come to the top of the bread mold</li>
+<li>Preheat oven with steam to 190 celcius</li>
+<li>Bake for 35 minutes at 190 celcius</li>
+<li>Take bread out of the mold and let it rest on a rack until fully
+cold</li>
+<li>Cut in slices</li>
+<li>Place slices in the freezer to store</li>
+</ol>
+</article>
+</main>
+
+<footer>
+<p>&copy; <span id="year"></span> Nathan Boone | Code by AI, Content by Me</p>
+</footer>
+
+<script src="script.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+</body>
+</html>

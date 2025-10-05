@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+<title>NB - IP Config Batch Script</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+<nav>
+<a href="index.html">Home</a>
+ | <a href="homelab.html">Homelab</a> | <a href="recipes.html">Recipes</a> | <a href="security.html">Security</a> | <a href="windows.html" class="active">Windows</a> | <a href="whoami.html">About</a>
+</nav>
+</header>
+
+<main>
+<article>
+<h1>IP Config Batch Script</h1>
+<p class="date">2021-02-21</p>
+
+
+<p>Changing an IP address on a Windows PC multiple times a day can be
+time consuming. Learn here how to make a batch script that helps in
+automating this process.</p>
+<h3 id="explanation">1. Explanation</h3>
+<p>If you have to change your IP address from static to DHCP and back to
+static you will know that it takes some time to change this. You have to
+go to the adapter menu and change the adapter settings. In this tutorial
+I will give some example batch scripts to change the adapter IP address
+settings without going to the menu. The adapter name can change from
+computer to computer so best to check your adapter name by typing
+“ipconfig” in the cmd window.</p>
+<h3 id="batch-scripts">2. Batch scripts</h3>
+<h4 id="dhcp">2.1 DHCP</h4>
+<p>The following script will change the adapter named “Ethernet” dns and
+IP address to DHCP. In the end it will show you the adapter new IP
+settings. You can press q to exit the script.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>  <span class="ex">@echo</span> off</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">netsh</span> interface ip set address <span class="st">&quot;Ethernet&quot;</span> dhcp</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">netsh</span> interface ip set dns name=<span class="st">&quot;Ethernet&quot;</span> dhcp</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">:loop</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="ex">netsh</span> interface ip show config name=<span class="st">&quot;Ethernet&quot;</span> <span class="kw">|</span> <span class="ex">findstr</span> /V Metric <span class="kw">|</span> <span class="ex">findstr</span> /V suffix <span class="kw">|</span> <span class="ex">findstr</span> /V WINS</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">set</span> /p Quit=To close this window press q:</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="ex">[%Quit%]==[q]</span> exit</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">goto</span> loop</span></code></pre></div>
+<h4 id="static-ip">2.2 Static IP</h4>
+<p>The following script will expect you to input an IP address, default
+gateway and subnet mask. It will then change the adapter named
+“Ethernet” with the information you provided. In the end it will show
+you the adapter new IP settings. You can press q to exit the script.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>  <span class="ex">@echo</span> off</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;Static IP Address:&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">set</span> /p IP_Address=</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;Default Gateway:&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="bu">set</span> /p Default_Gateway=</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;Subnet Mask:&quot;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="bu">set</span> /p Subnet_Mask=</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="ex">netsh</span> interface ip set address <span class="st">&quot;Ethernet&quot;</span> static %IP_Address% %Subnet_Mask% %Default_Gateway%</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="ex">:loop</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="ex">netsh</span> interface ip show config name=<span class="st">&quot;Ethernet&quot;</span> <span class="kw">|</span> <span class="ex">findstr</span> /V Metric <span class="kw">|</span> <span class="ex">findstr</span> /V suffix <span class="kw">|</span> <span class="ex">findstr</span> /V WINS</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">set</span> /p Quit=To close this window press q:</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="ex">[%Quit%]==[q]</span> exit</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="ex">goto</span> loop</span></code></pre></div>
+<h4 id="what-is-my-ip">2.3 What is my IP</h4>
+<p>This script will show you the “Ethernet” and “Wi-Fi” adapter IP
+settings. You can press q to exit the script.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>  <span class="ex">@echo</span> off</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="ex">:loop</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">netsh</span> interface ip show config name=<span class="st">&quot;Ethernet&quot;</span> <span class="kw">|</span> <span class="ex">findstr</span> /V Metric <span class="kw">|</span> <span class="ex">findstr</span> /V suffix <span class="kw">|</span> <span class="ex">findstr</span> /V WINS</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="ex">netsh</span> interface ip show config name=<span class="st">&quot;Wi-Fi&quot;</span> <span class="kw">|</span> <span class="ex">findstr</span> /V Metric <span class="kw">|</span> <span class="ex">findstr</span> /V suffix <span class="kw">|</span> <span class="ex">findstr</span> /V WINS</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">set</span> /p Quit=To close this window press q:</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="ex">[%Quit%]==[q]</span> exit</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="ex">goto</span> loop</span></code></pre></div>
+<h4 id="explenation-of-commands-used-in-scripts">2.4 Explenation of
+commands used in scripts</h4>
+<p><code>@echo off</code> this will make sure that only the required
+output is printed on the screen. The commands that are used inside the
+scripts will not be shown in the output.”</p>
+<p><code>netsh interface ip set</code> changes the IP address and DNS
+settings of the Ethernet adapter to DHCP.</p>
+<p><code>netsh interface ip show</code> shows information about the
+specified interface. The <code>/V</code> will exclude the information we
+do not require.</p>
+<p><code>:loop</code> this will make a placeholder in the script where
+you can later on reffer to so you can jump back to this place in the
+script. You can give this any name you want. In this case it is named
+loop because we are using this as a loop.</p>
+<p><code>goto loop</code> this will jump back to the placeholder we made
+earlier which we named “loop”</p>
+<p><code>set /p Quit=</code> this will wait on an input of the user and
+place the input in the Quit variable</p>
+<p><code>if [%Quit%]==[q] exit</code> this will compare the user input
+with “q” if it is “q” then it will end the program which will also end
+the loop.</p>
+</article>
+</main>
+
+<footer>
+<p>&copy; <span id="year"></span> Nathan Boone | Code by AI, Content by Me</p>
+</footer>
+
+<script src="script.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+</body>
+</html>

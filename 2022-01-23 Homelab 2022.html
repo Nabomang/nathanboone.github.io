@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+<title>NB - Homelab 2022</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header>
+<nav>
+<a href="index.html">Home</a>
+ | <a href="homelab.html" class="active">Homelab</a> | <a href="recipes.html">Recipes</a> | <a href="security.html">Security</a> | <a href="windows.html">Windows</a> | <a href="whoami.html">About</a>
+</nav>
+</header>
+
+<main>
+<article>
+<h1>Homelab 2022</h1>
+<p class="date">2022-01-23</p>
+
+
+<p>When moving to South Korea I only had my laptop and a monitor, my
+home network/homelab evolved over time according to my needs.</p>
+<h1 id="intro">1. Intro</h1>
+<p>I could only take my laptop and computer monitor when moving from my
+hometown in Belgium to South Korea. I like to research things that can
+make my life easier and I also like technology so I built this homelab
+which evolved as my needs changed. This blog post is all about sharing
+my road to the homelab I have now.</p>
+<p><img src="/images/Homelab_Evolution/homelab.gif" alt="homelab" /></p>
+<h1 id="march-2018---all-in-one-server">2. March 2018 - All-in-one
+server</h1>
+<p>After arriving in South Korea I was on the lookout for a server to
+use as a Router/GNS3 server/NAS all-in-one solution. I found a
+workstation quite cheap on a secondhand site, for 220.000 KRW (around
+180 USD) I bought my first server in Korea.</p>
+<p>The use case of this server was to run an ESXI server, virtualize
+pfSense and FreeNAS so I could have my own router and storage
+solution.</p>
+<p>This server did not have all the required hardware so I bought the
+following extra hardware: - RAM - HBA (host bus adapter) - 4 port intel
+network card - Hard drives</p>
+<h2 id="topology">2.1 Topology</h2>
+<p><img src="/images/Homelab_Evolution/HomeNetwork_2018-03.png"
+alt="homelab" /></p>
+<h1 id="july-2018---wap-and-switch">3. July 2018 - WAP and Switch</h1>
+<p>Having my own wireless solution is something I was looking out for so
+at July 2018 I bought a Unifi WAP AC LR. I installed the WLC on my PC
+which makes it easy to manage the WAP. I wanted to have 2 wireless
+networks, one for all IOT devices or other devices which I do not trust
+and one for the devices I trust. This requires the use of VLANs to
+separate both networks. To use VLANs, a supported managed switch is
+required so I bought a TP-Link TL-SG108E which gives me the ability to
+work with VLANs.</p>
+<h2 id="topology-1">3.1 Topology</h2>
+<p><img src="/images/Homelab_Evolution/HomeNetwork_2018-07.png"
+alt="homelab" /></p>
+<h1 id="november-2018---odroid-hc2-and-qotom-pfsense">4. November 2018 -
+Odroid HC2 and Qotom pfSense</h1>
+<p>The all-in-one server was too power-hungry and it was uncomfortable
+to run my router on the same device as the other VMs so I decided to
+separate the functionality in their own hardware. I bought a Qotom PC
+where I am running pfSense for my router and an Odroid HC2 where I am
+using OMV (open media vault) as a NAS solution. I decided to configure
+OpenVPN which gives me access to my internal network or to just connect
+with in case I am connected to an unsafe wireless network. Under OMV I
+am running docker with PiHole as my DNS server. Duck DNS is a dynamic
+DNS solution which I am using to connect the VPN so there are no
+connection issues even if the WAN IP changes.</p>
+<h2 id="topology-2">4.1 Topology</h2>
+<p><img src="/images/Homelab_Evolution/HomeNetwork_2019-10.png"
+alt="homelab" /></p>
+<h1 id="october-2019---synology-nas">5. October 2019 - Synology NAS</h1>
+<p>The Odroid HC2 is a fun device but it was having stability issues and
+I wanted to have 2 mirrored hard drives just for peace of mind if one
+hard drive fails. I was also getting interested in building a media
+center and these containers require some more RAM so I bought a Synology
+NAS DS218+. The built-in 2GB was not enough so I bought 8GB extra RAM
+which was sufficient to run all the containers I want.</p>
+<h2 id="topology-3">5.1 Topology</h2>
+<p><img src="/images/Homelab_Evolution/HomeNetwork_2019-10.png"
+alt="homelab" /></p>
+<h1 id="february-2020---new-laptop-repurpose-old-laptop">6. February
+2020 - New Laptop, Repurpose Old Laptop</h1>
+<p>The screen hinges of my laptop Dell Vostro V131 failed and while
+installing new ones I damaged my screen. I did not want to invest in
+this 6-year-old laptop so I decided to but a new laptop, the Lenovo
+T490. I repurposed the old laptop, disconnected the screen, and
+installed Proxmox as I wanted to try out something else as the familiar
+VMware ESXI. Proxmox was a good experience and not so different from
+ESXI. I also experimented with PRTG network monitoring that I set up to
+send me mails in case the servers are down.</p>
+<h2 id="topology-4">6.1 Topology</h2>
+<p><img src="/images/Homelab_Evolution/HomeNetwork_2020-02.png"
+alt="homelab" /></p>
+<h1 id="january-2022---new-home-new-needs">7. January 2022 - New Home,
+New Needs</h1>
+<p>Moving to a new home changed the place where the NAS is located. Due
+to COVID-19 and all the working from home, I need to work next to where
+the NAS is located. I tried to silence the NAS with velcro strips and
+rubber strips at the HDD bays and also bought shock-absorbing pads to
+put underneath the NAS but it was still too loud. We are mainly watching
+Netflix so I decided to stop most of the containers which were running
+on the NAS because they kept the hard drives busy the whole time. With
+the hard drives silent the NAS almost makes no noise anymore. I bought
+my own domain, nabomang.com with comes from my initials and the Korean
+word for network. Some family is still using the external VPN so I kept
+the Duck DNS service but I am also trying out the Namecheap DDNS service
+which is stable until now. I also migrated from OpenVPN to WireGuard as
+VPN solution as there is now a package available for pfSense. I changed
+from GNS3 to EVE-NG as a network virtualization solution and I feel that
+the interface fits better with me.</p>
+<h2 id="topology-5">7.1 Topology</h2>
+<p><img src="/images/Homelab_Evolution/HomeNetwork_2022-01.png"
+alt="homelab" /></p>
+<h1 id="future">8. Future</h1>
+<p>When I find time I am planning to start using the Odroid HC2 again
+and run some Docker containers on this device. My homelab will keep
+changing as my needs keep evolving.</p>
+</article>
+</main>
+
+<footer>
+<p>&copy; <span id="year"></span> Nathan Boone | Code by AI, Content by Me</p>
+</footer>
+
+<script src="script.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+</body>
+</html>
