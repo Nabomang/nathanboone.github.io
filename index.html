@@ -8,71 +8,129 @@
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
 <title>NB - Nathan Boone</title>
 <link rel="stylesheet" href="style.css" />
+<style>
+:root {
+  --cat-about: hsl(240, 49%, 92%);
+  --cat-homelab: hsl(0, 53%, 91%);
+  --cat-korea: hsl(150, 46%, 89%);
+  --cat-recipes: hsl(210, 52%, 90%);
+  --cat-security: hsl(180, 59%, 92%);
+}
+</style>
 </head>
 <body>
 <header>
 <nav>
-<a href="index.html" class="active">Home</a>
- | <a href="homelab.html">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html">Recipes</a> | <a href="security.html">Security</a> | <a href="whoami.html">About</a>
+<a href="index.html" class="active">Home</a> | <a href="homelab.html">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html">Recipes</a> | <a href="security.html">Security</a> | <a href="whoami.html">About</a>
 </nav>
 </header>
 
 <main>
-<article class="list-page">
-<h1>Nathan Boone</h1>
+<h1 class="page-title">Nathan Boone</h1>
 
-<h2 id="homelab">Homelab</h2>
-<section id="homelab-2022---2022-01-23" class="post-item">
-<h3><a href="2022-01-23%20Homelab%202022.html">Homelab 2022</a> -
-2022-01-23</h3>
-<p>Overview of my homelab as of 2022</p>
-</section>
-<section id="ip-config-batch-script---2021-02-21" class="post-item">
-<h3><a href="2021-02-21%20IP%20configuration%20batch%20script.html">IP
-Config Batch Script</a> - 2021-02-21</h3>
-<p>Batch script to automate changing IP of a Windows PC</p>
-</section>
-<hr />
-<h2 id="korea">Korea</h2>
-<section id="eerste-ervaringen-in-korea---2015-10-30" class="post-item">
-<h3><a href="2015-10-30%20Eerste%20ervaringen%20in%20Korea.html">Eerste
-ervaringen in Korea</a> - 2015-10-30</h3>
-<p>Eerste ervaring om on Korea te leven</p>
-</section>
-<section id="eerste-week-school---2015-10-30" class="post-item">
-<h3><a href="Eerste%20week%20school.html">Eerste week school</a> -
-2015-10-30</h3>
-<p>Eerste week school</p>
-</section>
-<hr />
-<h2 id="recipes">Recipes</h2>
-<section id="bread-chia-seed-no-knead---2025-10-05" class="post-item">
-<h3><a href="2025-10-05%20Bread%20Chia%20Seed%20No%20Knead.html">Bread
-Chia Seed No Knead</a> - 2025-10-05</h3>
-<p>Easy to make daily bread including many seeds and nuts.</p>
-</section>
-<section id="korean-chicken-noodle-soup---2025-10-05" class="post-item">
-<h3><a href="2025-10-05%20Korean%20chicken%20noodle%20soup.html">Korean
-chicken noodle soup</a> - 2025-10-05</h3>
-<p>Chicken noddle soup for toddler</p>
-</section>
-<section id="blueberry-muffin---2025-10-05" class="post-item">
-<h3><a href="2025-10-05%20Blueberry%20Muffin.html">Blueberry muffin</a>
-- 2025-10-05</h3>
-<p>Blueberry muffin recipe for 2 year old.</p>
-</section>
-<hr />
-<h2 id="security">Security</h2>
-<section id="multi-factor-authentication---2022-01-27"
-class="post-item">
-<h3><a
-href="2022-01-27%20Multi%20factor%20authentication.html">Multi-factor
-Authentication</a> - 2022-01-27</h3>
-<p>Strategy to recover from losing phone when MFA is implemented</p>
-</section>
-<hr />
+<div class="card-grid">
+<a href="2025-10-05%20Bread%20Chia%20Seed%20No%20Knead.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(210, 52%, 90%);">Recipes</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">Bread Chia Seed No Knead</h3>
+      <span class="card-date">Oct 5 2025</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text card-text-full">Easy to make daily bread including many seeds and nuts.</div>
+    </div>
+  </div>
+</a>
+<a href="2025-10-05%20Korean%20chicken%20noodle%20soup.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(210, 52%, 90%);">Recipes</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">Korean chicken noodle soup</h3>
+      <span class="card-date">Oct 5 2025</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text card-text-full">Chicken noddle soup for toddler</div>
+    </div>
+  </div>
+</a>
+<a href="2025-10-05%20Blueberry%20Muffin.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(210, 52%, 90%);">Recipes</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">Blueberry muffin</h3>
+      <span class="card-date">Oct 5 2025</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text card-text-full">Blueberry muffin recipe for 2 year old.</div>
+    </div>
+  </div>
+</a>
+<a href="2022-01-27%20Multi%20factor%20authentication.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(180, 59%, 92%);">Security</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">Multi-factor Authentication</h3>
+      <span class="card-date">Jan 27 2022</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text">Strategy to recover from losing phone when MFA is implemented</div>
+      <div class="card-thumbnail"><img src="/images/multi_factor_authentication/blog_mfa-Lost_Phone_Recovery.png" alt="Multi-factor Authentication" /></div>
+    </div>
+  </div>
+</a>
+<a href="2022-01-23%20Homelab%202022.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(0, 53%, 91%);">Homelab</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">Homelab 2022</h3>
+      <span class="card-date">Jan 23 2022</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text">Overview of my homelab as of 2022</div>
+      <div class="card-thumbnail"><img src="/images/Homelab_Evolution/HomeNetwork_2020-02.png" alt="Homelab 2022" /></div>
+    </div>
+  </div>
+</a>
+<a href="2021-02-21%20IP%20configuration%20batch%20script.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(0, 53%, 91%);">Homelab</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">IP Config Batch Script</h3>
+      <span class="card-date">Feb 21 2021</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text card-text-full">Batch script to automate changing IP of a Windows PC</div>
+    </div>
+  </div>
+</a>
+<a href="2015-10-30%20Eerste%20ervaringen%20in%20Korea.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(150, 46%, 89%);">Korea</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">Eerste ervaringen in Korea</h3>
+      <span class="card-date">Oct 30 2015</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text">Eerste ervaring om on Korea te leven</div>
+      <div class="card-thumbnail"><img src="/images/Eerste_ervaringen_in_Korea/nathan_soyoon_buiten.jpg" alt="Eerste ervaringen in Korea" /></div>
+    </div>
+  </div>
+</a>
+<a href="2015-10-30%20Eerste%20week%20school.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(150, 46%, 89%);">Korea</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">Eerste week school</h3>
+      <span class="card-date">Oct 30 2015</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text">Eerste week school</div>
+      <div class="card-thumbnail"><img src="/images/Eerste_Week_School/eerste_lessen2.jpg" alt="Eerste week school" /></div>
+    </div>
+  </div>
+</a>
+</div>
 
-</article>
 </main>
 
 <footer>
@@ -81,6 +139,5 @@ Authentication</a> - 2022-01-27</h3>
 
 <script src="script.js"></script>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-
 </body>
 </html>

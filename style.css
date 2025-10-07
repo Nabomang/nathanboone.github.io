@@ -1,5 +1,5 @@
 /* ============================================
-   Blog CSS Stylesheet
+   Blog CSS Stylesheet - Card Layout
    ============================================ */
 
 /* Base & Typography */
@@ -35,14 +35,14 @@ body {
 main {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 1rem 1rem;
 }
 
 /* Header & Navigation */
 header {
   background: var(--color-bg);
   border-bottom: 1px solid var(--color-border);
-  padding: 1.25rem 0;
+  padding: 0.75rem 0;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -52,17 +52,31 @@ header {
 header nav {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
   display: flex;
   gap: 0;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
   align-items: center;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
+
+/* Hide scrollbar for clean look */
+header nav::-webkit-scrollbar {
+  height: 3px;
+}
+
+header nav::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
 
 nav a {
   color: var(--color-text);
   text-decoration: none;
-  padding: 0.625rem 1.25rem;
+  padding: 0.5rem 1rem;
   font-size: 0.9375rem;
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -81,8 +95,187 @@ nav a.active {
   font-weight: 600;
 }
 
+/* Page Title */
+.page-title {
+  font-size: 2rem;
+  line-height: 1.2;
+  margin: 1.5rem 0 1.5rem 0;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.75rem;
+}
 
-/* Typography */
+/* Card Grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 1.5rem 0;
+}
+
+@media (max-width: 1023px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Post Card */
+.post-card {
+  display: block;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--color-text);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.post-card:hover {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+  text-decoration: none;
+}
+
+/* Card Category Bar */
+.card-category {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 4px 4px 0 0;
+  margin: -1px -1px 0 -1px;
+}
+
+
+
+/* Card Body */
+.card-body {
+  padding: 0.75rem;
+}
+
+/* Card Header (Title + Date Row) */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-title {
+  font-size: 1.125rem;
+  line-height: 1.3;
+  margin: 0;
+  font-weight: 500;
+  flex: 1;
+  color: var(--color-text);
+}
+
+.card-date {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  font-weight: 400;
+}
+
+/* Card Content (Summary + Thumbnail Row) */
+.card-content {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.card-text {
+  flex: 1;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-text-full {
+  flex: 1 1 100%;
+}
+
+/* Card Thumbnail */
+.card-thumbnail {
+  width: 120px;
+  height: 90px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 3px;
+  border: 1px solid var(--color-border);
+}
+
+.card-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+@media (max-width: 767px) {
+  .card-thumbnail {
+    width: 100px;
+    height: 75px;
+  }
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+.pagination-top {
+  margin-bottom: 1.5rem;
+}
+
+.pagination-bottom {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.pagination-link {
+  padding: 0.5rem 1.25rem;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.pagination-link:hover {
+  background: var(--color-accent);
+  color: white;
+  border-color: var(--color-accent);
+  text-decoration: none;
+}
+
+/* Typography for Individual Posts */
 h1 {
   font-size: 2.75rem;
   line-height: 1.15;
@@ -253,12 +446,11 @@ article img {
   border: 1px solid var(--color-border);
 }
 
-/* Prevent images from being too large on wide screens */
 article img {
   max-width: 900px;
 }
 
-/* Gallery grid layout */
+/* Gallery grid layout (PRESERVED - DO NOT MODIFY) */
 .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -311,9 +503,7 @@ article .gallery img:hover {
   }
 }
 
-
-
-/* Lightbox modal */
+/* Lightbox modal (PRESERVED - DO NOT MODIFY) */
 .lightbox {
   display: none;
   position: fixed;
@@ -361,7 +551,6 @@ article .gallery img:hover {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 
 /* Task Lists */
 ul.task-list {
@@ -464,118 +653,6 @@ ul.task-list input[type="checkbox"] {
   background: var(--color-text);
 }
 
-/* List Page Styling (Index & Category Pages) */
-.list-page {
-  display: block;
-}
-
-.list-page h1 {
-  margin-bottom: 3rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-border);
-}
-
-/* Post Item - Cisco blog-style cards */
-.post-item {
-  background: white;
-  padding: 0;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: 1.5rem;
-  transition: all 0.2s ease;
-}
-
-.post-item:hover {
-  border-bottom-color: var(--color-accent);
-}
-
-.post-item h3 {
-  margin: 0 0 0.75rem 0;
-  font-size: 1.375rem;
-  font-weight: 400;
-  line-height: 1.3;
-}
-
-.post-item h3 a {
-  color: var(--color-text);
-  font-weight: 400;
-  text-decoration: none;
-}
-
-.post-item h3 a:hover {
-  color: var(--color-accent);
-  text-decoration: none;
-}
-
-.post-item p {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-size: 0.9375rem;
-  line-height: 1.6;
-}
-
-/* View More button */
-.view-more {
-  margin: 2rem 0 3rem 0;
-}
-
-.view-more a {
-  display: inline-block;
-  padding: 0.75rem 2rem;
-  background: var(--color-accent);
-  color: white;
-  border: none;
-  border-radius: 3px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  font-size: 0.9375rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Multi-column grid for larger screens */
-@media (min-width: 900px) {
-  .list-page h2 ~ .post-item:nth-of-type(2n+1) {
-    clear: left;
-  }
-  
-  .list-page h2 + .post-item,
-  .list-page .post-item + .post-item {
-    width: calc(50% - 1rem);
-    float: left;
-    margin-right: 2rem;
-  }
-  
-  .list-page .post-item:nth-child(even) {
-    margin-right: 0;
-  }
-  
-  .list-page .view-more,
-  .list-page h2 {
-    clear: both;
-    width: 100%;
-  }
-  
-  .list-page::after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-}
-
-
-.view-more a:hover {
-  background: var(--color-accent-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px var(--color-shadow);
-}
-
-/* Hide horizontal rules */
-.list-page hr {
-  display: none;
-}
-
 /* Article Spacing */
 article {
   margin-bottom: 3rem;
@@ -589,8 +666,8 @@ article:not(.list-page) {
 
 /* Footer */
 footer {
-  margin-top: 5rem;
-  padding: 2rem 0;
+  margin-top: 3rem;
+  padding: 1.5rem 0;
   border-top: 1px solid var(--color-border);
   background: var(--color-bg-alt);
 }
@@ -598,7 +675,7 @@ footer {
 footer p {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
   color: var(--color-text-secondary);
   font-size: 0.875rem;
   text-align: center;
@@ -607,11 +684,16 @@ footer p {
 /* Responsive Design */
 @media (max-width: 768px) {
   main {
-    padding: 1.5rem 1rem;
+    padding: 0.75rem 0.75rem;
   }
   
   header nav {
-    padding: 0 1rem;
+    padding: 0 0.75rem;
+  }
+  
+  .page-title {
+    font-size: 1.75rem;
+    margin: 1rem 0 1rem 0;
   }
   
   h1 {
@@ -625,10 +707,6 @@ footer p {
   
   h3 {
     font-size: 1.125rem;
-  }
-  
-  .post-item h3 {
-    font-size: 1.25rem;
   }
 }
 
@@ -677,15 +755,73 @@ footer p {
     width: 100%;
   }
   
-  .post-item {
-    padding-bottom: 1.25rem;
-    margin-bottom: 1.5rem;
-  }
-  
   footer {
-    margin-top: 3rem;
+    margin-top: 2rem;
   }
 }
+
+/* Post Navigation - Minimal transparent style */
+.post-nav {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.post-nav-link {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 400;
+  transition: color 0.2s ease;
+}
+
+.post-nav-link:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+@media (max-width: 640px) {
+  .post-nav {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+/* Pagination - Minimal transparent style */
+.pagination {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+.pagination-top {
+  margin-bottom: 1.5rem;
+}
+
+.pagination-bottom {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.pagination-link {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 400;
+  transition: color 0.2s ease;
+}
+
+.pagination-link:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+
 
 /* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
@@ -726,12 +862,16 @@ footer p {
     color: var(--color-text);
   }
   
-  .post-item {
+  table {
     background: var(--color-bg);
   }
   
-  table {
+  .post-card {
     background: var(--color-bg);
+  }
+  
+  .pagination-link {
+    background: var(--color-bg-alt);
   }
 }
 
@@ -751,7 +891,8 @@ footer p {
   .copy-button,
   .recipe-scaler,
   nav,
-  footer {
+  footer,
+  .pagination {
     display: none;
   }
   
@@ -765,12 +906,12 @@ footer p {
     page-break-inside: avoid;
   }
   
-  .post-item {
+  .post-card {
     page-break-inside: avoid;
+    border: 1px solid #ccc;
   }
   
   h2 {
     page-break-after: avoid;
   }
 }
-

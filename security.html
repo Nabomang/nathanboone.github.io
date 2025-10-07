@@ -8,28 +8,42 @@
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
 <title>NB - Security</title>
 <link rel="stylesheet" href="style.css" />
+<style>
+:root {
+  --cat-about: hsl(240, 49%, 92%);
+  --cat-homelab: hsl(0, 53%, 91%);
+  --cat-korea: hsl(150, 46%, 89%);
+  --cat-recipes: hsl(210, 52%, 90%);
+  --cat-security: hsl(180, 59%, 92%);
+}
+</style>
 </head>
 <body>
 <header>
 <nav>
-<a href="index.html">Home</a>
- | <a href="homelab.html">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html">Recipes</a> | <a href="security.html" class="active">Security</a> | <a href="whoami.html">About</a>
+<a href="index.html">Home</a> | <a href="homelab.html">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html">Recipes</a> | <a href="security.html" class="active">Security</a> | <a href="whoami.html">About</a>
 </nav>
 </header>
 
 <main>
-<article class="list-page">
-<h1>Security</h1>
+<h1 class="page-title">Security</h1>
 
-<section id="multi-factor-authentication---2022-01-27"
-class="post-item">
-<h3><a
-href="2022-01-27%20Multi%20factor%20authentication.html">Multi-factor
-Authentication</a> - 2022-01-27</h3>
-<p>Strategy to recover from losing phone when MFA is implemented</p>
-</section>
+<div class="card-grid">
+<a href="2022-01-27%20Multi%20factor%20authentication.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(180, 59%, 92%);">Security</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">Multi-factor Authentication</h3>
+      <span class="card-date">Jan 27 2022</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text">Strategy to recover from losing phone when MFA is implemented</div>
+      <div class="card-thumbnail"><img src="/images/multi_factor_authentication/blog_mfa-Lost_Phone_Recovery.png" alt="Multi-factor Authentication" /></div>
+    </div>
+  </div>
+</a>
+</div>
 
-</article>
 </main>
 
 <footer>
@@ -38,6 +52,5 @@ Authentication</a> - 2022-01-27</h3>
 
 <script src="script.js"></script>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-
 </body>
 </html>

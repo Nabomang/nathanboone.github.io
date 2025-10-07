@@ -8,36 +8,65 @@
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
 <title>NB - Recipes</title>
 <link rel="stylesheet" href="style.css" />
+<style>
+:root {
+  --cat-about: hsl(240, 49%, 92%);
+  --cat-homelab: hsl(0, 53%, 91%);
+  --cat-korea: hsl(150, 46%, 89%);
+  --cat-recipes: hsl(210, 52%, 90%);
+  --cat-security: hsl(180, 59%, 92%);
+}
+</style>
 </head>
 <body>
 <header>
 <nav>
-<a href="index.html">Home</a>
- | <a href="homelab.html">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html" class="active">Recipes</a> | <a href="security.html">Security</a> | <a href="whoami.html">About</a>
+<a href="index.html">Home</a> | <a href="homelab.html">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html" class="active">Recipes</a> | <a href="security.html">Security</a> | <a href="whoami.html">About</a>
 </nav>
 </header>
 
 <main>
-<article class="list-page">
-<h1>Recipes</h1>
+<h1 class="page-title">Recipes</h1>
 
-<section id="bread-chia-seed-no-knead---2025-10-05" class="post-item">
-<h3><a href="2025-10-05%20Bread%20Chia%20Seed%20No%20Knead.html">Bread
-Chia Seed No Knead</a> - 2025-10-05</h3>
-<p>Easy to make daily bread including many seeds and nuts.</p>
-</section>
-<section id="korean-chicken-noodle-soup---2025-10-05" class="post-item">
-<h3><a href="2025-10-05%20Korean%20chicken%20noodle%20soup.html">Korean
-chicken noodle soup</a> - 2025-10-05</h3>
-<p>Chicken noddle soup for toddler</p>
-</section>
-<section id="blueberry-muffin---2025-10-05" class="post-item">
-<h3><a href="2025-10-05%20Blueberry%20Muffin.html">Blueberry muffin</a>
-- 2025-10-05</h3>
-<p>Blueberry muffin recipe for 2 year old.</p>
-</section>
+<div class="card-grid">
+<a href="2025-10-05%20Bread%20Chia%20Seed%20No%20Knead.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(210, 52%, 90%);">Recipes</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">Bread Chia Seed No Knead</h3>
+      <span class="card-date">Oct 5 2025</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text card-text-full">Easy to make daily bread including many seeds and nuts.</div>
+    </div>
+  </div>
+</a>
+<a href="2025-10-05%20Korean%20chicken%20noodle%20soup.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(210, 52%, 90%);">Recipes</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">Korean chicken noodle soup</h3>
+      <span class="card-date">Oct 5 2025</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text card-text-full">Chicken noddle soup for toddler</div>
+    </div>
+  </div>
+</a>
+<a href="2025-10-05%20Blueberry%20Muffin.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(210, 52%, 90%);">Recipes</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">Blueberry muffin</h3>
+      <span class="card-date">Oct 5 2025</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text card-text-full">Blueberry muffin recipe for 2 year old.</div>
+    </div>
+  </div>
+</a>
+</div>
 
-</article>
 </main>
 
 <footer>
@@ -46,6 +75,5 @@ chicken noodle soup</a> - 2025-10-05</h3>
 
 <script src="script.js"></script>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-
 </body>
 </html>

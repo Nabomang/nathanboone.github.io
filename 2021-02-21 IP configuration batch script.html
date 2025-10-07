@@ -17,10 +17,21 @@
 </nav>
 </header>
 
+
 <main>
 <article>
+
+<!-- Post Navigation Top -->
+<div class="post-nav">
+  <a href="index.html" class="post-nav-link">← Home</a>
+  <a href="homelab.html" class="post-nav-link">More in Homelab →</a>
+</div>
+
+
 <h1>IP Config Batch Script</h1>
 <p class="date">2021-02-21</p>
+
+
 
 
 <p>Changing an IP address on a Windows PC multiple times a day can be
@@ -102,15 +113,25 @@ place the input in the Quit variable</p>
 <p><code>if [%Quit%]==[q] exit</code> this will compare the user input
 with “q” if it is “q” then it will end the program which will also end
 the loop.</p>
+
+<!-- Post Navigation Bottom -->
+<div class="post-nav">
+  <a href="index.html" class="post-nav-link">← Home</a>
+  <a href="homelab.html" class="post-nav-link">More in Homelab →</a>
+</div>
+
 </article>
 </main>
+
 
 <footer>
 <p>&copy; <span id="year"></span> Nathan Boone | Code by AI, Content by Me</p>
 </footer>
 
+
 <script src="script.js"></script>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
 
 </body>
 </html>

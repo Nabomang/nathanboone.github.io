@@ -8,31 +8,54 @@
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
 <title>NB - Homelab</title>
 <link rel="stylesheet" href="style.css" />
+<style>
+:root {
+  --cat-about: hsl(240, 49%, 92%);
+  --cat-homelab: hsl(0, 53%, 91%);
+  --cat-korea: hsl(150, 46%, 89%);
+  --cat-recipes: hsl(210, 52%, 90%);
+  --cat-security: hsl(180, 59%, 92%);
+}
+</style>
 </head>
 <body>
 <header>
 <nav>
-<a href="index.html">Home</a>
- | <a href="homelab.html" class="active">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html">Recipes</a> | <a href="security.html">Security</a> | <a href="whoami.html">About</a>
+<a href="index.html">Home</a> | <a href="homelab.html" class="active">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html">Recipes</a> | <a href="security.html">Security</a> | <a href="whoami.html">About</a>
 </nav>
 </header>
 
 <main>
-<article class="list-page">
-<h1>Homelab</h1>
+<h1 class="page-title">Homelab</h1>
 
-<section id="homelab-2022---2022-01-23" class="post-item">
-<h3><a href="2022-01-23%20Homelab%202022.html">Homelab 2022</a> -
-2022-01-23</h3>
-<p>Overview of my homelab as of 2022</p>
-</section>
-<section id="ip-config-batch-script---2021-02-21" class="post-item">
-<h3><a href="2021-02-21%20IP%20configuration%20batch%20script.html">IP
-Config Batch Script</a> - 2021-02-21</h3>
-<p>Batch script to automate changing IP of a Windows PC</p>
-</section>
+<div class="card-grid">
+<a href="2022-01-23%20Homelab%202022.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(0, 53%, 91%);">Homelab</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">Homelab 2022</h3>
+      <span class="card-date">Jan 23 2022</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text">Overview of my homelab as of 2022</div>
+      <div class="card-thumbnail"><img src="/images/Homelab_Evolution/HomeNetwork_2020-02.png" alt="Homelab 2022" /></div>
+    </div>
+  </div>
+</a>
+<a href="2021-02-21%20IP%20configuration%20batch%20script.html" class="post-card">
+  <div class="card-category" style="background-color: hsl(0, 53%, 91%);">Homelab</div>
+  <div class="card-body">
+    <div class="card-header">
+      <h3 class="card-title">IP Config Batch Script</h3>
+      <span class="card-date">Feb 21 2021</span>
+    </div>
+    <div class="card-content">
+      <div class="card-text card-text-full">Batch script to automate changing IP of a Windows PC</div>
+    </div>
+  </div>
+</a>
+</div>
 
-</article>
 </main>
 
 <footer>
@@ -41,6 +64,5 @@ Config Batch Script</a> - 2021-02-21</h3>
 
 <script src="script.js"></script>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-
 </body>
 </html>
