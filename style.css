@@ -127,13 +127,6 @@ nav a.active {
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .card-category {
-    color: #000000;
-  }
-}
-
-
 /* Post Card */
 .post-card {
   display: block;
@@ -844,6 +837,11 @@ footer p {
     --color-shadow: rgba(0, 0, 0, 0.3);
   }
   
+  /* Force category text to black for readability on pastel backgrounds */
+  .card-category {
+    color: #000000;
+  }
+  
   header {
     background: var(--color-bg);
   }
@@ -881,6 +879,7 @@ footer p {
     background: var(--color-bg-alt);
   }
 }
+
 
 /* Print Styles */
 @media print {
