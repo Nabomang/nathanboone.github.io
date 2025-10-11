@@ -200,3 +200,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Find all images within the main article content
+  const postImages = document.querySelectorAll('article img');
+
+  postImages.forEach(img => {
+    // Check if the image is NOT inside a gallery (to avoid applying two lightboxes)
+    // and also check it's not already wrapped in a link.
+    if (!img.closest('.gallery') && !img.closest('a')) {
+      
+      const link = document.createElement('a');
+      link.href = img.src; // The link will point to the full-size image
+
+      // Add the same attributes that your gallery script looks for
+      link.setAttribute('data-fslightbox', 'post-images'); 
+      link.setAttribute('data-title', img.alt || ' '); // Use the image's alt text as a caption
+
+      // Wrap the image with the newly created link
+      img.parentNode.replaceChild(link, img);
+      link.appendChild(img);
+    }
+  });
+});
