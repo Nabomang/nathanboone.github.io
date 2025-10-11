@@ -209,9 +209,6 @@ nav a.active {
   overflow: hidden;
 }
 
-.card-text-full {
-  flex: 1 1 100%;
-}
 
 /* Card Thumbnail */
 .card-thumbnail {
