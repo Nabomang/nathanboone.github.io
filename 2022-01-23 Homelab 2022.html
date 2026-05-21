@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="icon" type="image/svg+xml" href="favicon.svg" />
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
 <title>NB - Homelab 2022</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -16,22 +16,11 @@
  | <a href="homelab.html" class="active">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html">Recipes</a> | <a href="security.html">Security</a> | <a href="whoami.html">About</a>
 </nav>
 </header>
-
-
 <main>
 <article>
 
-<!-- Post Navigation Top -->
-<div class="post-nav">
-  <a href="index.html" class="post-nav-link">← Home</a>
-  <a href="homelab.html" class="post-nav-link">More in Homelab →</a>
-</div>
-
-
 <h1>Homelab 2022</h1>
 <p class="date">2022-01-23</p>
-
-
 
 
 <p>When moving to South Korea I only had my laptop and a monitor, my
@@ -42,7 +31,10 @@ hometown in Belgium to South Korea. I like to research things that can
 make my life easier and I also like technology so I built this homelab
 which evolved as my needs changed. This blog post is all about sharing
 my road to the homelab I have now.</p>
-<p><img src="/images/Homelab_Evolution/homelab.gif" alt="homelab" /></p>
+<figure>
+<img src="/images/Homelab_Evolution/homelab.gif" alt="homelab" />
+<figcaption aria-hidden="true">homelab</figcaption>
+</figure>
 <h1 id="march-2018---all-in-one-server">2. March 2018 - All-in-one
 server</h1>
 <p>After arriving in South Korea I was on the lookout for a server to
@@ -56,8 +48,11 @@ solution.</p>
 following extra hardware: - RAM - HBA (host bus adapter) - 4 port intel
 network card - Hard drives</p>
 <h2 id="topology">2.1 Topology</h2>
-<p><img src="/images/Homelab_Evolution/HomeNetwork_2018-03.png"
-alt="homelab" /></p>
+<figure>
+<img src="/images/Homelab_Evolution/HomeNetwork_2018-03.png"
+alt="homelab" />
+<figcaption aria-hidden="true">homelab</figcaption>
+</figure>
 <h1 id="july-2018---wap-and-switch">3. July 2018 - WAP and Switch</h1>
 <p>Having my own wireless solution is something I was looking out for so
 at July 2018 I bought a Unifi WAP AC LR. I installed the WLC on my PC
@@ -80,8 +75,11 @@ am running docker with PiHole as my DNS server. Duck DNS is a dynamic
 DNS solution which I am using to connect the VPN so there are no
 connection issues even if the WAN IP changes.</p>
 <h2 id="topology-1">4.1 Topology</h2>
-<p><img src="/images/Homelab_Evolution/HomeNetwork_2019-10.png"
-alt="homelab" /></p>
+<figure>
+<img src="/images/Homelab_Evolution/HomeNetwork_2019-10.png"
+alt="homelab" />
+<figcaption aria-hidden="true">homelab</figcaption>
+</figure>
 <h1 id="october-2019---synology-nas">5. October 2019 - Synology NAS</h1>
 <p>The Odroid HC2 is a fun device but it was having stability issues and
 I wanted to have 2 mirrored hard drives just for peace of mind if one
@@ -90,8 +88,11 @@ center and these containers require some more RAM so I bought a Synology
 NAS DS218+. The built-in 2GB was not enough so I bought 8GB extra RAM
 which was sufficient to run all the containers I want.</p>
 <h2 id="topology-2">5.1 Topology</h2>
-<p><img src="/images/Homelab_Evolution/HomeNetwork_2019-10.png"
-alt="homelab" /></p>
+<figure>
+<img src="/images/Homelab_Evolution/HomeNetwork_2019-10.png"
+alt="homelab" />
+<figcaption aria-hidden="true">homelab</figcaption>
+</figure>
 <h1 id="february-2020---new-laptop-repurpose-old-laptop">6. February
 2020 - New Laptop, Repurpose Old Laptop</h1>
 <p>The screen hinges of my laptop Dell Vostro V131 failed and while
@@ -103,8 +104,11 @@ VMware ESXI. Proxmox was a good experience and not so different from
 ESXI. I also experimented with PRTG network monitoring that I set up to
 send me mails in case the servers are down.</p>
 <h2 id="topology-3">6.1 Topology</h2>
-<p><img src="/images/Homelab_Evolution/HomeNetwork_2020-02.png"
-alt="homelab" /></p>
+<figure>
+<img src="/images/Homelab_Evolution/HomeNetwork_2020-02.png"
+alt="homelab" />
+<figcaption aria-hidden="true">homelab</figcaption>
+</figure>
 <h1 id="january-2022---new-home-new-needs">7. January 2022 - New Home,
 New Needs</h1>
 <p>Moving to a new home changed the place where the NAS is located. Due
@@ -123,31 +127,26 @@ VPN solution as there is now a package available for pfSense. I changed
 from GNS3 to EVE-NG as a network virtualization solution and I feel that
 the interface fits better with me.</p>
 <h2 id="topology-4">7.1 Topology</h2>
-<p><img src="/images/Homelab_Evolution/HomeNetwork_2022-01.png"
-alt="homelab" /></p>
+<figure>
+<img src="/images/Homelab_Evolution/HomeNetwork_2022-01.png"
+alt="homelab" />
+<figcaption aria-hidden="true">homelab</figcaption>
+</figure>
 <h1 id="future">8. Future</h1>
 <p>When I find time I am planning to start using the Odroid HC2 again
 and run some Docker containers on this device. My homelab will keep
 changing as my needs keep evolving.</p>
 
-<!-- Post Navigation Bottom -->
-<div class="post-nav">
-  <a href="index.html" class="post-nav-link">← Home</a>
-  <a href="homelab.html" class="post-nav-link">More in Homelab →</a>
-</div>
+
+
+
 
 </article>
 </main>
-
-
 <footer>
 <p>&copy; <span id="year"></span> Nathan Boone | Code by AI, layout and content by me</p>
 </footer>
-
-
 <script src="script.js"></script>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-
-
 </body>
 </html>

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NB - Pizza Dough with Poolish</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body class="is-recipe">
+<header>
+<nav>
+<a href="index.html">Home</a>
+ | <a href="homelab.html">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html" class="active">Recipes</a> | <a href="security.html">Security</a> | <a href="whoami.html">About</a>
+</nav>
+</header>
+<main>
+<article>
+
+<h1>Pizza Dough with Poolish</h1>
+<p class="date">2026-05-21</p>
+
+<!-- Recipe Scaler -->
+<div class="recipe-scaler">
+  <label for="base-ingredient-select">Scale by: <select id="base-ingredient-select"><option value="">-- Select ingredient --</option></select></label>
+  <label for="scaler-input">I have <input type="number" id="scaler-input" min="0.1" step="0.1" /> <span id="ingredient-unit">g</span></label>
+  <button id="scale-recipe">Scale Recipe</button>
+  <button id="reset-recipe">Reset</button>
+</div>
+
+<!-- Hidden data holder for main recipe image -->
+
+<!-- Hidden data holder for bread timing -->
+<div id="bread-timing-data" data-recipe-type="bread" style="display:none;"><span data-step-name="Mix
+poolish" data-step-minutes="10"></span><span data-step-name="Poolish
+room temp
+activation" data-step-minutes="60"></span><span data-step-name="Poolish
+cold ferment
+(fridge)" data-step-minutes="960"></span><span data-step-name="Mix pizza
+dough" data-step-minutes="30"></span><span data-step-name="Dough cold
+ferment
+(fridge)" data-step-minutes="960"></span><span data-step-name="Warm
+dough to room
+temp" data-step-minutes="60"></span><span data-step-name="Shape balls
+&amp;
+proof" data-step-minutes="120"></span><span data-step-name="Preheat
+oven" data-step-minutes="60"></span><span data-step-name="Bake" data-step-minutes="10"></span></div>
+
+<!-- Bread timing planner UI -->
+<div class="bread-planner" id="bread-planner" style="display:none;">
+  <strong>Bread Planner</strong>
+  <label for="bread-ready-date">Ready on: <input type="date" id="bread-ready-date" /></label>
+  <label for="bread-ready-time">At: <input type="text" id="bread-ready-time" placeholder="HH:MM" pattern="[0-2][0-9]:[0-5][0-9]" maxlength="5" style="width:5rem;" /></label>
+  <button id="bread-calc">Calculate Schedule</button>
+  <div id="bread-schedule"></div>
+</div>
+
+<h3 id="poolish-ingredients">Poolish Ingredients</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />300 g 00 flour</label></li>
+<li><label><input type="checkbox" />300 ml water</label></li>
+<li><label><input type="checkbox" />5 g dry yeast (or 6 g fresh
+yeast)</label></li>
+<li><label><input type="checkbox" />5 g honey</label></li>
+</ul>
+<h3 id="pizza-dough-ingredients">Pizza Dough Ingredients</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />All of the poolish</label></li>
+<li><label><input type="checkbox" />700 g 00 flour</label></li>
+<li><label><input type="checkbox" />400 ml water</label></li>
+<li><label><input type="checkbox" />30 g sea salt</label></li>
+<li><label><input type="checkbox" />10 g olive oil</label></li>
+</ul>
+<h3 id="steps">Steps</h3>
+<h4 id="n.1-make-the-poolish">N.1 — Make the Poolish</h4>
+<ol type="1">
+<li>Mix water, honey and yeast together until dissolved</li>
+<li>Add flour and mix until no dry flour remains</li>
+<li>Cover and rest 1 hour at room temperature to activate the yeast</li>
+<li>Put in the fridge for 16 to 24 hours</li>
+</ol>
+<h4 id="n.2-make-the-pizza-dough">N.2 — Make the Pizza Dough</h4>
+<ol type="1">
+<li>Take poolish out of the fridge (optionally rest 30 minutes to come
+to temperature)</li>
+<li>Add 400 ml water to the poolish and dissolve it fully</li>
+<li>Add salt and mix</li>
+<li>Add 700 g flour and mix until combined</li>
+<li>Transfer to a work surface and knead until smooth, about 10 to 15
+minutes</li>
+<li>Add olive oil and incorporate fully</li>
+<li>Form into a ball and rest 15 to 20 minutes</li>
+<li>Stretch and fold a couple of times until surface is smooth</li>
+<li>Lightly oil a bowl, place dough inside and seal with no air
+pockets</li>
+<li>Put immediately in the fridge for 16 to 24 hours</li>
+</ol>
+<h4 id="n.3-shape-and-bake">N.3 — Shape and Bake</h4>
+<ol type="1">
+<li>Take dough out of the fridge and rest 30 minutes to 1 hour at room
+temperature</li>
+<li>Divide and shape into balls of about 250 g each</li>
+<li>Place balls seam-side down in a floured dough box, close the
+lid</li>
+<li>Rest at room temperature for 2 to 4 hours (about 2 hours at
+25°C)</li>
+<li>Preheat oven to maximum temperature with pizza stone inside for 1
+hour</li>
+<li>Stretch dough on a semolina-dusted surface</li>
+<li>Add toppings and bake until crust is golden and crunchy</li>
+</ol>
+<h3 id="comment">Comment</h3>
+<p>The double cold fermentation — first in the poolish, then in the full
+dough — is what gives this pizza its flavour and its airy, crispy crust.
+Use 00 flour if you can; regular flour works too. Total time from start
+to eating is around 38 hours, but active work is only about an hour
+spread over two days. The planner above will help you work out exactly
+when to start.</p>
+<p>Source: <a href="https://www.youtube.com/watch?v=u7Hd6ZzKgBM">YouTube
+— Next Level Pizza Dough</a></p>
+
+
+
+
+
+</article>
+</main>
+<footer>
+<p>&copy; <span id="year"></span> Nathan Boone | Code by AI, layout and content by me</p>
+</footer>
+<script src="script.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

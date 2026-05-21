@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="icon" type="image/svg+xml" href="favicon.svg" />
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
 <title>NB - Multi-factor Authentication</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -16,22 +16,11 @@
  | <a href="homelab.html">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html">Recipes</a> | <a href="security.html" class="active">Security</a> | <a href="whoami.html">About</a>
 </nav>
 </header>
-
-
 <main>
 <article>
 
-<!-- Post Navigation Top -->
-<div class="post-nav">
-  <a href="index.html" class="post-nav-link">← Home</a>
-  <a href="security.html" class="post-nav-link">More in Security →</a>
-</div>
-
-
 <h1>Multi-factor Authentication</h1>
 <p class="date">2022-01-27</p>
-
-
 
 
 <p>Using multi-factor authentication increases the security for logging
@@ -145,9 +134,12 @@ Phone</h1>
 <p>Below you can find a flowchart to show how I usually log in to any
 website or application when using the Bitwarden application on my
 phone.</p>
-<p><img
+<figure>
+<img
 src="/images/multi_factor_authentication/blog_mfa-Phone_Bitwarden.png"
-alt="mfa-Phone_Bitwarden" /></p>
+alt="mfa-Phone_Bitwarden" />
+<figcaption aria-hidden="true">mfa-Phone_Bitwarden</figcaption>
+</figure>
 <h1 id="bitwarden-pc-and-duo-phone">5.2 Bitwarden PC and DUO Phone</h1>
 <p>Below you can find a flowchart to show how I usually log in to any
 website or application when using the Bitwarden browser extension on my
@@ -157,9 +149,11 @@ that I am not using a finger scan here. Instead of fingerprint
 biometrics authentication, I have to log in with the master password for
 every new browser session. This is something you can change in the
 Bitwarden application settings.</p>
-<p><img
-src="/images/multi_factor_authentication/blog_mfa-PC_Bitwarden.png"
-alt="mfa-PC_Bitwarden" /></p>
+<figure>
+<img src="/images/multi_factor_authentication/blog_mfa-PC_Bitwarden.png"
+alt="mfa-PC_Bitwarden" />
+<figcaption aria-hidden="true">mfa-PC_Bitwarden</figcaption>
+</figure>
 <h1 id="lost-phone-recovery">6. Lost Phone Recovery</h1>
 <p>For each of the previously shown authentication methods DUO is
 required to access the Bitwarden application that stores all my logins
@@ -174,9 +168,12 @@ access to Bitwarden in case it is only locked.</p>
 passcodes, Bitwarden and Microsoft Authenticator. I configured all three
 services in a way that each can separately be recovered with offline
 recovery codes.</p>
-<p><img
+<figure>
+<img
 src="/images/multi_factor_authentication/blog_mfa-Lost_Phone_Recovery.png"
-alt="mfa-Lost_Phone_Recovery" /></p>
+alt="mfa-Lost_Phone_Recovery" />
+<figcaption aria-hidden="true">mfa-Lost_Phone_Recovery</figcaption>
+</figure>
 <h1 id="outro">7. Outro</h1>
 <p>There are many applications and many ways for implementing
 multi-factor authentication. Everyone can implement this in their way
@@ -186,24 +183,16 @@ yourself.</p>
 <p>You can verify at https://2fa.directory/ if the services you are
 using is compatible with a way of multi-factor authentication.</p>
 
-<!-- Post Navigation Bottom -->
-<div class="post-nav">
-  <a href="index.html" class="post-nav-link">← Home</a>
-  <a href="security.html" class="post-nav-link">More in Security →</a>
-</div>
+
+
+
 
 </article>
 </main>
-
-
 <footer>
 <p>&copy; <span id="year"></span> Nathan Boone | Code by AI, layout and content by me</p>
 </footer>
-
-
 <script src="script.js"></script>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-
-
 </body>
 </html>

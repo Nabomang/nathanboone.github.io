@@ -3,50 +3,54 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="icon" type="image/svg+xml" href="favicon.svg" />
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
 <title>NB - Bread Chia Seed No Knead</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="is-recipe">
 <header>
 <nav>
 <a href="index.html">Home</a>
  | <a href="homelab.html">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html" class="active">Recipes</a> | <a href="security.html">Security</a> | <a href="whoami.html">About</a>
 </nav>
 </header>
-
-
 <main>
 <article>
-
-<!-- Post Navigation Top -->
-<div class="post-nav">
-  <a href="index.html" class="post-nav-link">← Home</a>
-  <a href="recipes.html" class="post-nav-link">More in Recipes →</a>
-</div>
-
 
 <h1>Bread Chia Seed No Knead</h1>
 <p class="date">2025-10-05</p>
 
-
-<!-- Recipe Scaler (only for Recipes category) -->
+<!-- Recipe Scaler -->
 <div class="recipe-scaler">
-<label for="base-ingredient-select">
-Scale by: 
-<select id="base-ingredient-select">
-  <option value="">-- Select ingredient --</option>
-</select>
-</label>
-<label for="scaler-input">
-I have <input type="number" id="scaler-input" value="" min="0.1" step="0.1" /> <span id="ingredient-unit">g</span>
-</label>
-<button id="scale-recipe">Scale Recipe</button>
-<button id="reset-recipe">Reset</button>
+  <label for="base-ingredient-select">Scale by: <select id="base-ingredient-select"><option value="">-- Select ingredient --</option></select></label>
+  <label for="scaler-input">I have <input type="number" id="scaler-input" min="0.1" step="0.1" /> <span id="ingredient-unit">g</span></label>
+  <button id="scale-recipe">Scale Recipe</button>
+  <button id="reset-recipe">Reset</button>
 </div>
 
+<!-- Hidden data holder for main recipe image -->
+
+<!-- Hidden data holder for bread timing -->
+<div id="bread-timing-data" data-recipe-type="bread" style="display:none;"><span data-step-name="Mix
+&amp; autolyse" data-step-minutes="30"></span><span data-step-name="Add
+yeast &amp; salt,
+rest" data-step-minutes="30"></span><span data-step-name="Add seeds
+&amp; rest" data-step-minutes="30"></span><span data-step-name="Stretch,
+fold &amp;
+rest" data-step-minutes="30"></span><span data-step-name="Final proof in
+mold" data-step-minutes="60"></span><span data-step-name="Bake" data-step-minutes="35"></span><span data-step-name="Cool
+on rack" data-step-minutes="60"></span></div>
+
+<!-- Bread timing planner UI -->
+<div class="bread-planner" id="bread-planner" style="display:none;">
+  <strong>Bread Planner</strong>
+  <label for="bread-ready-date">Ready on: <input type="date" id="bread-ready-date" /></label>
+  <label for="bread-ready-time">At: <input type="text" id="bread-ready-time" placeholder="HH:MM" pattern="[0-2][0-9]:[0-5][0-9]" maxlength="5" style="width:5rem;" /></label>
+  <button id="bread-calc">Calculate Schedule</button>
+  <div id="bread-schedule"></div>
+</div>
 
 <h3 id="ingredients">Ingredients</h3>
 <ul class="task-list">
@@ -84,24 +88,16 @@ cold</li>
 <li>Place slices in the freezer to store</li>
 </ol>
 
-<!-- Post Navigation Bottom -->
-<div class="post-nav">
-  <a href="index.html" class="post-nav-link">← Home</a>
-  <a href="recipes.html" class="post-nav-link">More in Recipes →</a>
-</div>
+
+
+
 
 </article>
 </main>
-
-
 <footer>
 <p>&copy; <span id="year"></span> Nathan Boone | Code by AI, layout and content by me</p>
 </footer>
-
-
 <script src="script.js"></script>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-
-
 </body>
 </html>
