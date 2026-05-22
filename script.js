@@ -181,15 +181,19 @@ function setupBreadPlanner() {
 
   document.getElementById('bread-calc').addEventListener('click', function () {
     const dateVal = document.getElementById('bread-ready-date').value;
-    const timeVal = document.getElementById('bread-ready-time').value;
+    let timeVal = document.getElementById('bread-ready-time').value.trim();
     if (!dateVal || !timeVal) {
       document.getElementById('bread-schedule').innerHTML =
-        '<p style="color:red;font-size:0.85rem;">Please fill in both a date and a time (HH:MM).</p>';
+        '<p style="color:red;font-size:0.85rem;">Please fill in both a date and a time.</p>';
       return;
+    }
+    // Accept HHMM (e.g. 1500) and normalise to HH:MM
+    if (/^([01]\d|2[0-3])[0-5]\d$/.test(timeVal)) {
+      timeVal = timeVal.slice(0, 2) + ':' + timeVal.slice(2);
     }
     if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(timeVal)) {
       document.getElementById('bread-schedule').innerHTML =
-        '<p style="color:red;font-size:0.85rem;">Time must be in 24h format HH:MM (e.g. 18:00).</p>';
+        '<p style="color:red;font-size:0.85rem;">Time must be in 24h format HH:MM or HHMM (e.g. 18:00 or 1800).</p>';
       return;
     }
 
