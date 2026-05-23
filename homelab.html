@@ -16,6 +16,15 @@
   --cat-recipes: hsl(210, 52%, 90%);
   --cat-security: hsl(180, 59%, 92%);
 }
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cat-about: hsl(240, 44%, 26%);
+    --cat-homelab: hsl(0, 33%, 25%);
+    --cat-korea: hsl(150, 41%, 23%);
+    --cat-recipes: hsl(210, 37%, 24%);
+    --cat-security: hsl(180, 39%, 26%);
+  }
+}
 </style>
 </head>
 <body>
@@ -31,7 +40,7 @@
 <div class="card-grid">
 
 <a href="2022-01-23%20Homelab%202022.html" class="post-card">
-  <div class="card-category" style="background-color: hsl(0, 53%, 91%);">Homelab</div>
+  <div class="card-category" style="background-color: var(--cat-homelab);">Homelab</div>
   <div class="card-body">
     <div class="card-header">
       <h3 class="card-title">Homelab 2022</h3>
@@ -47,7 +56,7 @@
   </div>
 </a>
 <a href="2021-02-21%20IP%20configuration%20batch%20script.html" class="post-card">
-  <div class="card-category" style="background-color: hsl(0, 53%, 91%);">Homelab</div>
+  <div class="card-category" style="background-color: var(--cat-homelab);">Homelab</div>
   <div class="card-body">
     <div class="card-header">
       <h3 class="card-title">IP Config Batch Script</h3>

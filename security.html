@@ -16,6 +16,15 @@
   --cat-recipes: hsl(210, 52%, 90%);
   --cat-security: hsl(180, 59%, 92%);
 }
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cat-about: hsl(240, 44%, 26%);
+    --cat-homelab: hsl(0, 33%, 25%);
+    --cat-korea: hsl(150, 41%, 23%);
+    --cat-recipes: hsl(210, 37%, 24%);
+    --cat-security: hsl(180, 39%, 26%);
+  }
+}
 </style>
 </head>
 <body>
@@ -31,7 +40,7 @@
 <div class="card-grid">
 
 <a href="2022-01-27%20Multi%20factor%20authentication.html" class="post-card">
-  <div class="card-category" style="background-color: hsl(180, 59%, 92%);">Security</div>
+  <div class="card-category" style="background-color: var(--cat-security);">Security</div>
   <div class="card-body">
     <div class="card-header">
       <h3 class="card-title">Multi-factor Authentication</h3>

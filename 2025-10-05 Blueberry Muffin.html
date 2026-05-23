@@ -22,12 +22,29 @@
 <h1>Blueberry muffin</h1>
 <p class="date">2025-10-05</p>
 
-<!-- Recipe Scaler -->
-<div class="recipe-scaler">
-  <label for="base-ingredient-select">Scale by: <select id="base-ingredient-select"><option value="">-- Select ingredient --</option></select></label>
-  <label for="scaler-input">I have <input type="number" id="scaler-input" min="0.1" step="0.1" /> <span id="ingredient-unit">g</span></label>
-  <button id="scale-recipe">Scale Recipe</button>
-  <button id="reset-recipe">Reset</button>
+<!-- Recipe Scaler Card -->
+<div class="recipe-card" id="scaler-card">
+  <button class="recipe-card-header" aria-expanded="false">
+    <span>&#9878; Recipe Scaler</span>
+    <span class="toggle-chevron"></span>
+  </button>
+  <div class="recipe-card-body">
+    <div class="recipe-scaler">
+      <div class="scaler-row">
+        <label for="base-ingredient-select">Scale by</label>
+        <select id="base-ingredient-select"><option value="">— select ingredient —</option></select>
+      </div>
+      <div class="scaler-row">
+        <span id="scaler-have-label">I have</span>
+        <button class="qty-btn" id="qty-down" style="display:none;">&#8722;</button>
+        <input type="number" id="scaler-input" min="0.1" step="0.1" />
+        <button class="qty-btn" id="qty-up" style="display:none;">+</button>
+        <span id="ingredient-unit">g</span>
+        <button id="scale-recipe">Scale</button>
+        <button id="reset-recipe">Reset</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Hidden data holder for main recipe image -->
@@ -36,7 +53,7 @@ muffin" style="display:none;"></div>
 
 <!-- Hidden data holder for bread timing -->
 
-<!-- Bread timing planner UI -->
+<!-- Bread Planner Card -->
 
 <h3 id="ingredients">Ingredients</h3>
 <ul class="task-list">

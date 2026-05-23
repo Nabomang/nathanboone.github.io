@@ -16,6 +16,15 @@
   --cat-recipes: hsl(210, 52%, 90%);
   --cat-security: hsl(180, 59%, 92%);
 }
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cat-about: hsl(240, 44%, 26%);
+    --cat-homelab: hsl(0, 33%, 25%);
+    --cat-korea: hsl(150, 41%, 23%);
+    --cat-recipes: hsl(210, 37%, 24%);
+    --cat-security: hsl(180, 39%, 26%);
+  }
+}
 </style>
 </head>
 <body>
@@ -31,7 +40,7 @@
 <div class="card-grid">
 
 <a href="2026-05-21%20Pizza%20Dough%20Poolish.html" class="post-card">
-  <div class="card-category" style="background-color: hsl(210, 52%, 90%);">Recipes</div>
+  <div class="card-category" style="background-color: var(--cat-recipes);">Recipes</div>
   <div class="card-body">
     <div class="card-header">
       <h3 class="card-title">Pizza Dough with Poolish</h3>
@@ -44,7 +53,7 @@
   </div>
 </a>
 <a href="2025-10-05%20Bread%20Chia%20Seed%20No%20Knead.html" class="post-card">
-  <div class="card-category" style="background-color: hsl(210, 52%, 90%);">Recipes</div>
+  <div class="card-category" style="background-color: var(--cat-recipes);">Recipes</div>
   <div class="card-body">
     <div class="card-header">
       <h3 class="card-title">Bread Chia Seed No Knead</h3>
@@ -57,7 +66,7 @@
   </div>
 </a>
 <a href="2025-10-05%20Korean%20chicken%20noodle%20soup.html" class="post-card">
-  <div class="card-category" style="background-color: hsl(210, 52%, 90%);">Recipes</div>
+  <div class="card-category" style="background-color: var(--cat-recipes);">Recipes</div>
   <div class="card-body">
     <div class="card-header">
       <h3 class="card-title">Korean chicken noodle soup</h3>
@@ -70,7 +79,7 @@
   </div>
 </a>
 <a href="2025-10-05%20Blueberry%20Muffin.html" class="post-card">
-  <div class="card-category" style="background-color: hsl(210, 52%, 90%);">Recipes</div>
+  <div class="card-category" style="background-color: var(--cat-recipes);">Recipes</div>
   <div class="card-body">
     <div class="card-header">
       <h3 class="card-title">Blueberry muffin</h3>
@@ -86,7 +95,7 @@
   </div>
 </a>
 <a href="2022-01-27%20Multi%20factor%20authentication.html" class="post-card">
-  <div class="card-category" style="background-color: hsl(180, 59%, 92%);">Security</div>
+  <div class="card-category" style="background-color: var(--cat-security);">Security</div>
   <div class="card-body">
     <div class="card-header">
       <h3 class="card-title">Multi-factor Authentication</h3>
@@ -102,7 +111,7 @@
   </div>
 </a>
 <a href="2022-01-23%20Homelab%202022.html" class="post-card">
-  <div class="card-category" style="background-color: hsl(0, 53%, 91%);">Homelab</div>
+  <div class="card-category" style="background-color: var(--cat-homelab);">Homelab</div>
   <div class="card-body">
     <div class="card-header">
       <h3 class="card-title">Homelab 2022</h3>
@@ -118,7 +127,7 @@
   </div>
 </a>
 <a href="2021-02-21%20IP%20configuration%20batch%20script.html" class="post-card">
-  <div class="card-category" style="background-color: hsl(0, 53%, 91%);">Homelab</div>
+  <div class="card-category" style="background-color: var(--cat-homelab);">Homelab</div>
   <div class="card-body">
     <div class="card-header">
       <h3 class="card-title">IP Config Batch Script</h3>
@@ -131,7 +140,7 @@
   </div>
 </a>
 <a href="2015-10-30%20Eerste%20ervaringen%20in%20Korea.html" class="post-card">
-  <div class="card-category" style="background-color: hsl(150, 46%, 89%);">Korea</div>
+  <div class="card-category" style="background-color: var(--cat-korea);">Korea</div>
   <div class="card-body">
     <div class="card-header">
       <h3 class="card-title">Eerste ervaringen in Korea</h3>
@@ -147,7 +156,7 @@
   </div>
 </a>
 <a href="2015-10-30%20Eerste%20week%20school.html" class="post-card">
-  <div class="card-category" style="background-color: hsl(150, 46%, 89%);">Korea</div>
+  <div class="card-category" style="background-color: var(--cat-korea);">Korea</div>
   <div class="card-body">
     <div class="card-header">
       <h3 class="card-title">Eerste week school</h3>

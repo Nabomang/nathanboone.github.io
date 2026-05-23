@@ -168,16 +168,86 @@ function setupBreadPlanner() {
   if (!dataEl) return;
   if (dataEl.getAttribute('data-recipe-type') !== 'bread') return;
 
-  const steps = Array.from(dataEl.querySelectorAll('span')).map(span => ({
+  const stepSpans = Array.from(dataEl.querySelectorAll('span'));
+  const stepDefs = stepSpans.map(span => ({
     name: span.getAttribute('data-step-name'),
-    minutes: parseInt(span.getAttribute('data-step-minutes'), 10)
+    minutes: parseInt(span.getAttribute('data-step-minutes'), 10),
+    parallel: span.getAttribute('data-step-parallel') === 'true'
   }));
 
-  if (!steps.length) return;
+  if (!stepDefs.length) return;
 
   const planner = document.getElementById('bread-planner');
   if (!planner) return;
-  planner.style.display = '';
+  const plannerCard = document.getElementById('planner-card');
+  if (plannerCard) plannerCard.style.display = '';
+
+  // Render editable step duration table before the date/time inputs
+  const dateLabel = planner.querySelector('label[for="bread-ready-date"]');
+  const editorDiv = document.createElement('div');
+  editorDiv.className = 'bread-step-editor';
+  let editorHtml = '<table><thead><tr><th>Step</th><th>Duration</th></tr></thead><tbody>';
+  stepDefs.forEach((s, i) => {
+    const rowClass = s.parallel ? ' class="step-parallel"' : '';
+    const parallelLabel = s.parallel ? ' <span class="parallel-tag">&#8599; parallel</span>' : '';
+    const useHours = s.minutes >= 60;
+    const displayVal = useHours ? Math.round(s.minutes / 60 * 10) / 10 : s.minutes;
+    const minSel = useHours ? '' : ' selected';
+    const hSel = useHours ? ' selected' : '';
+    editorHtml += `<tr${rowClass}><td>${s.name}${parallelLabel}</td>` +
+      `<td><input type="number" class="step-duration-input" data-index="${i}" min="0.1" step="0.1" value="${displayVal}" />` +
+      `<select class="step-unit-select" data-index="${i}"><option value="min"${minSel}>min</option><option value="h"${hSel}>h</option></select></td></tr>`;
+  });
+  editorHtml += '</tbody></table>';
+  editorDiv.innerHTML = editorHtml;
+
+  // Unit conversion when user switches between min and h
+  editorDiv.addEventListener('change', function(e) {
+    if (!e.target.classList.contains('step-unit-select')) return;
+    const idx = e.target.getAttribute('data-index');
+    const numInput = editorDiv.querySelector(`.step-duration-input[data-index="${idx}"]`);
+    const currentVal = parseFloat(numInput.value) || 0;
+    if (e.target.value === 'h') {
+      numInput.value = Math.round(currentVal / 60 * 10) / 10;
+      numInput.step = '0.1';
+      numInput.min = '0.1';
+    } else {
+      numInput.value = Math.round(currentVal * 60);
+      numInput.step = '1';
+      numInput.min = '1';
+    }
+  });
+
+  planner.insertBefore(editorDiv, dateLabel);
+
+  // Helper: format a Date for display
+  function fmt(d) {
+    return d.toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric',
+      hour: '2-digit', minute: '2-digit', hour12: false });
+  }
+  function fmtDuration(m) {
+    if (m < 60) return m + ' min';
+    const h = Math.floor(m / 60), rem = m % 60;
+    return h + 'h' + (rem ? ' ' + rem + 'm' : '');
+  }
+
+  // Helper: format a local datetime as iCal string YYYYMMDDTHHMMSS in given IANA tz
+  function formatIcalLocal(date, tz) {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: tz,
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      hour12: false
+    }).formatToParts(date);
+    const p = {};
+    parts.forEach(pt => { p[pt.type] = pt.value; });
+    // Intl may return hour as "24" for midnight — normalise to "00"
+    const hh = p.hour === '24' ? '00' : p.hour;
+    return `${p.year}${p.month}${p.day}T${hh}${p.minute}${p.second}`;
+  }
+
+  let lastSchedule = null;
+  let lastReadyAt = null;
 
   document.getElementById('bread-calc').addEventListener('click', function () {
     const dateVal = document.getElementById('bread-ready-date').value;
@@ -187,7 +257,6 @@ function setupBreadPlanner() {
         '<p style="color:red;font-size:0.85rem;">Please fill in both a date and a time.</p>';
       return;
     }
-    // Accept HHMM (e.g. 1500) and normalise to HH:MM
     if (/^([01]\d|2[0-3])[0-5]\d$/.test(timeVal)) {
       timeVal = timeVal.slice(0, 2) + ':' + timeVal.slice(2);
     }
@@ -197,35 +266,132 @@ function setupBreadPlanner() {
       return;
     }
 
+    // Read durations live from the editable inputs (with h/min unit conversion)
+    const liveSteps = stepDefs.map((s, i) => {
+      const input = editorDiv.querySelector(`.step-duration-input[data-index="${i}"]`);
+      const unitSel = editorDiv.querySelector(`.step-unit-select[data-index="${i}"]`);
+      const rawVal = input ? parseFloat(input.value) : NaN;
+      const unit = unitSel ? unitSel.value : 'min';
+      const mins = isNaN(rawVal) || rawVal <= 0
+        ? s.minutes
+        : (unit === 'h' ? Math.round(rawVal * 60) : Math.round(rawVal));
+      return { name: s.name, minutes: mins, parallel: s.parallel };
+    });
+
     const readyAt = new Date(dateVal + 'T' + timeVal);
     const schedule = [];
     let cursor = new Date(readyAt);
 
-    for (let i = steps.length - 1; i >= 0; i--) {
+    // Build schedule backward; parallel steps share the cursor with the next sequential step
+    for (let i = liveSteps.length - 1; i >= 0; i--) {
       const end = new Date(cursor);
-      cursor = new Date(cursor.getTime() - steps[i].minutes * 60000);
-      schedule.unshift({ name: steps[i].name, minutes: steps[i].minutes, start: new Date(cursor), end });
+      const start = new Date(cursor.getTime() - liveSteps[i].minutes * 60000);
+      schedule.unshift({ name: liveSteps[i].name, minutes: liveSteps[i].minutes, start, end, parallel: liveSteps[i].parallel });
+      if (!liveSteps[i].parallel) {
+        cursor = start; // only advance cursor for sequential steps
+      }
     }
 
-    function fmt(d) {
-      return d.toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric',
-        hour: '2-digit', minute: '2-digit', hour12: false });
-    }
-    function fmtDuration(m) {
-      if (m < 60) return m + ' min';
-      const h = Math.floor(m / 60), rem = m % 60;
-      return h + 'h' + (rem ? ' ' + rem + 'm' : '');
-    }
+    lastSchedule = schedule;
+    lastReadyAt = readyAt;
 
     let html = '<table><thead><tr><th>Step</th><th>Start</th><th>Duration</th></tr></thead><tbody>';
     schedule.forEach(s => {
-      html += `<tr><td>${s.name}</td><td>${fmt(s.start)}</td>` +
+      const rowClass = s.parallel ? ' class="step-parallel"' : '';
+      const parallelLabel = s.parallel ? ' <span class="parallel-tag">&#8599;</span>' : '';
+      html += `<tr${rowClass}><td>${s.name}${parallelLabel}</td><td>${fmt(s.start)}</td>` +
               `<td class="step-duration">${fmtDuration(s.minutes)}</td></tr>`;
     });
+    // Find the earliest sequential start for summary
+    const firstSeq = schedule.find(s => !s.parallel);
+    const summaryStart = firstSeq ? firstSeq.start : schedule[0].start;
     html += `</tbody></table><p style="margin-top:0.5rem;font-size:0.82rem;">` +
-            `Start <strong>${fmt(schedule[0].start)}</strong> — ready by <strong>${fmt(readyAt)}</strong></p>`;
+            `Start <strong>${fmt(summaryStart)}</strong> — ready by <strong>${fmt(readyAt)}</strong></p>`;
 
     document.getElementById('bread-schedule').innerHTML = html;
+
+    // Show the .ics download button
+    const icsBtn = document.getElementById('bread-download-ics');
+    if (icsBtn) icsBtn.style.display = '';
+  });
+
+  // .ics download
+  const icsBtn = document.getElementById('bread-download-ics');
+  if (icsBtn) {
+    icsBtn.addEventListener('click', function () {
+      if (!lastSchedule || !lastReadyAt) return;
+
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const title = document.querySelector('h1') ? document.querySelector('h1').textContent.trim() : 'Recipe';
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      const now = new Date();
+      const stampStr = formatIcalLocal(now, tz);
+
+      let ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Blog//Recipe Planner//EN',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH'
+      ];
+
+      lastSchedule.forEach((s, i) => {
+        const startStr = formatIcalLocal(s.start, tz);
+        const endStr = formatIcalLocal(s.end, tz);
+        ics = ics.concat([
+          'BEGIN:VEVENT',
+          `UID:${now.getTime()}-${i}@blog`,
+          `DTSTAMP;TZID=${tz}:${stampStr}`,
+          `DTSTART;TZID=${tz}:${startStr}`,
+          `DTEND;TZID=${tz}:${endStr}`,
+          `SUMMARY:${s.name}`,
+          `DESCRIPTION:${title}`,
+          'BEGIN:VALARM',
+          'TRIGGER:-PT5M',
+          'ACTION:DISPLAY',
+          'DESCRIPTION:Reminder',
+          'END:VALARM',
+          'END:VEVENT'
+        ]);
+      });
+
+      ics.push('END:VCALENDAR');
+
+      const blob = new Blob([ics.join('\r\n')], { type: 'text/calendar' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${slug}-schedule.ics`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }
+}
+
+
+
+function setupCollapsibleCards() {
+  document.querySelectorAll('.recipe-card-header').forEach(function(header) {
+    const card = header.closest('.recipe-card');
+    if (!card) return;
+    const body = card.querySelector('.recipe-card-body');
+    if (!body) return;
+    const cardId = card.id;
+    const storageKey = cardId ? ('recipeCard_' + cardId) : null;
+
+    // Restore saved state (default: closed)
+    if (storageKey && localStorage.getItem(storageKey) === 'open') {
+      body.classList.add('is-open');
+      header.setAttribute('aria-expanded', 'true');
+    }
+
+    header.addEventListener('click', function() {
+      const isOpen = body.classList.toggle('is-open');
+      header.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      if (storageKey) localStorage.setItem(storageKey, isOpen ? 'open' : 'closed');
+    });
   });
 }
 
@@ -236,11 +402,13 @@ function initRecipeLayout() {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', setupRecipeLayout);
     document.addEventListener('DOMContentLoaded', setupBreadPlanner);
+    document.addEventListener('DOMContentLoaded', setupCollapsibleCards);
     log('Waiting for DOMContentLoaded');
   } else {
     // DOM already loaded
     setupRecipeLayout();
     setupBreadPlanner();
+    setupCollapsibleCards();
     log('DOM already loaded, running immediately');
   }
 }
@@ -291,111 +459,151 @@ document.addEventListener("DOMContentLoaded", function() {
   const ingredientUnit = document.getElementById("ingredient-unit");
 
   if (scalerInput && scaleButton && resetButton && baseIngredientSelect) {
+    const scalerDiv = document.querySelector(".recipe-scaler");
+    const baseYield = scalerDiv ? parseFloat(scalerDiv.getAttribute("data-base-yield")) : NaN;
+    const yieldUnit = scalerDiv ? (scalerDiv.getAttribute("data-yield-unit") || "") : "";
+    const qtyDown = document.getElementById("qty-down");
+    const qtyUp = document.getElementById("qty-up");
+    const haveLabelEl = document.getElementById("scaler-have-label");
+
     const originalAmounts = new Map();
+    let mode = null; // 'ingredient' | 'batch'
     let baseIngredient = null;
     let baseAmount = 0;
-    
-    // Find ONLY the first task list (ingredients list) on the page
-    const firstTaskList = document.querySelector("ul.task-list");
+
+    // Collect all li items from all task-lists
+    const allTaskLists = document.querySelectorAll("ul.task-list");
     const seenOptions = new Set();
-    
-  if (firstTaskList) {
-    firstTaskList.querySelectorAll("li").forEach(function(li) {
-      const label = li.querySelector("label");
-      const checkbox = li.querySelector('input[type="checkbox"]');
-      const text = (label ? label.textContent : li.textContent).trim().replace(/\s+/g, ' ');
 
-      // Match patterns like: "200 g flour" or "120 ml water" or "5 salt"
-      const match = text.match(/^(\d+(?:\.\d+)?)\s*(g|kg|ml|l|cup|cups|tbsp|tsp|oz|lb|lbs)?\s+(.+)$/i);
-      if (!match) return;
-
-      const amount = parseFloat(match[1]);
-      const unit = match[2] || "";
-      const ingredient = match[3].trim();
-
-      // ALWAYS store in originalAmounts (for scaling ALL items)
-      originalAmounts.set(li, {
-        amount: amount,
-        unit: unit,
-        ingredient: ingredient,
-        originalText: text,
-        hasCheckbox: !!checkbox,
-        label: label
+    allTaskLists.forEach(function(taskList) {
+      taskList.querySelectorAll("li").forEach(function(li) {
+        const label = li.querySelector("label");
+        const checkbox = li.querySelector('input[type="checkbox"]');
+        const text = (label ? label.textContent : li.textContent).trim().replace(/\s+/g, ' ');
+        const match = text.match(/^(\d+(?:\.\d+)?)\s*(g|kg|ml|l|cup|cups|tbsp|tsp|oz|lb|lbs)?\s+(.+)$/i);
+        if (!match) return;
+        const amount = parseFloat(match[1]);
+        const unit = match[2] || "";
+        const ingredient = match[3].trim();
+        originalAmounts.set(li, { amount, unit, ingredient, originalText: text, hasCheckbox: !!checkbox, label });
+        const key = text.toLowerCase().trim();
+        if (seenOptions.has(key)) return;
+        seenOptions.add(key);
+        const option = document.createElement("option");
+        option.value = ingredient;
+        option.textContent = ingredient.substring(0, 30) + (ingredient.length > 30 ? "..." : "");
+        option.dataset.amount = amount;
+        option.dataset.unit = unit;
+        option.dataset.ingredient = ingredient;
+        baseIngredientSelect.appendChild(option);
       });
-
-      // Deduplicate by full text (amount + unit + ingredient)
-      const key = text.toLowerCase().trim();
-      if (seenOptions.has(key)) return;
-      seenOptions.add(key);
-
-      const option = document.createElement("option");
-      option.value = ingredient;
-      option.textContent = ingredient.substring(0, 30) + (ingredient.length > 30 ? "..." : "");
-      option.dataset.amount = amount;
-      option.dataset.unit = unit;
-      option.dataset.ingredient = ingredient;
-      baseIngredientSelect.appendChild(option);
     });
-  }
 
-    
-    // When user selects an ingredient
+    // Add batch option if yield data is present
+    if (!isNaN(baseYield) && yieldUnit) {
+      const group = document.createElement("optgroup");
+      group.label = "Batch";
+      const batchOpt = document.createElement("option");
+      batchOpt.value = "__batch__";
+      batchOpt.textContent = baseYield + " " + yieldUnit;
+      group.appendChild(batchOpt);
+      baseIngredientSelect.appendChild(group);
+    }
+
+    // Hide the scaler card entirely if nothing was parsed
+    const hasOptions = originalAmounts.size > 0 || (!isNaN(baseYield) && yieldUnit);
+    if (!hasOptions) {
+      const scalerCard = document.getElementById("scaler-card");
+      if (scalerCard) scalerCard.style.display = "none";
+      return;
+    }
+
+    function showQtyButtons(show) {
+      if (qtyDown) qtyDown.style.display = show ? "" : "none";
+      if (qtyUp) qtyUp.style.display = show ? "" : "none";
+    }
+
+    if (qtyDown) {
+      qtyDown.addEventListener("click", function() {
+        scalerInput.value = Math.max(1, (parseFloat(scalerInput.value) || baseYield) - 1);
+      });
+    }
+    if (qtyUp) {
+      qtyUp.addEventListener("click", function() {
+        scalerInput.value = (parseFloat(scalerInput.value) || baseYield) + 1;
+      });
+    }
+
     baseIngredientSelect.addEventListener("change", function() {
       const selected = this.options[this.selectedIndex];
-      if (selected.value) {
+      if (selected.value === "__batch__") {
+        mode = 'batch';
+        scalerInput.value = baseYield;
+        ingredientUnit.textContent = yieldUnit;
+        if (haveLabelEl) haveLabelEl.textContent = 'I want';
+        showQtyButtons(true);
+      } else if (selected.value) {
+        mode = 'ingredient';
         baseAmount = parseFloat(selected.dataset.amount);
         scalerInput.value = baseAmount;
-        ingredientUnit.textContent = selected.dataset.unit;
+        ingredientUnit.textContent = selected.dataset.unit || "";
         baseIngredient = selected.dataset.ingredient;
+        if (haveLabelEl) haveLabelEl.textContent = 'I have';
+        showQtyButtons(false);
+      } else {
+        mode = null;
+        scalerInput.value = "";
+        ingredientUnit.textContent = "";
+        if (haveLabelEl) haveLabelEl.textContent = 'I have';
+        showQtyButtons(false);
       }
     });
-    
+
     scaleButton.addEventListener("click", function() {
-      if (!baseIngredient) {
-        alert("Please select an ingredient first");
-        return;
-      }
-      
-      const newBaseAmount = parseFloat(scalerInput.value);
-      if (isNaN(newBaseAmount) || newBaseAmount <= 0) {
-        alert("Please enter a valid amount");
-        return;
-      }
-      
-      const scaleFactor = newBaseAmount / baseAmount;
-      
-      originalAmounts.forEach(function(data, li) {
-        const newAmount = Math.round(data.amount * scaleFactor * 10) / 10;
-        const newText = newAmount + (data.unit ? " " + data.unit : "") + " " + data.ingredient;
-        
-        // Handle task list items with checkboxes differently
-        if (data.hasCheckbox && data.label) {
-          const checkbox = data.label.querySelector('input[type="checkbox"]');
-          // Clear label text but keep checkbox
-          while (data.label.childNodes.length > 1) {
-            data.label.removeChild(data.label.lastChild);
+      if (mode === 'batch') {
+        const newYield = parseFloat(scalerInput.value);
+        if (isNaN(newYield) || newYield <= 0) { alert("Please enter a valid quantity"); return; }
+        const factor = newYield / baseYield;
+        originalAmounts.forEach(function(data, li) {
+          const newAmount = Math.round(data.amount * factor * 10) / 10;
+          const newText = newAmount + (data.unit ? " " + data.unit : "") + " " + data.ingredient;
+          if (data.hasCheckbox && data.label) {
+            while (data.label.childNodes.length > 1) data.label.removeChild(data.label.lastChild);
+            data.label.appendChild(document.createTextNode(newText));
+          } else {
+            li.textContent = newText;
           }
-          // Add new text after checkbox
-          data.label.appendChild(document.createTextNode(newText));
-        } else {
-          li.textContent = newText;
-        }
-      });
+        });
+      } else if (mode === 'ingredient') {
+        const newBaseAmount = parseFloat(scalerInput.value);
+        if (isNaN(newBaseAmount) || newBaseAmount <= 0) { alert("Please enter a valid amount"); return; }
+        const scaleFactor = newBaseAmount / baseAmount;
+        originalAmounts.forEach(function(data, li) {
+          const newAmount = Math.round(data.amount * scaleFactor * 10) / 10;
+          const newText = newAmount + (data.unit ? " " + data.unit : "") + " " + data.ingredient;
+          if (data.hasCheckbox && data.label) {
+            while (data.label.childNodes.length > 1) data.label.removeChild(data.label.lastChild);
+            data.label.appendChild(document.createTextNode(newText));
+          } else {
+            li.textContent = newText;
+          }
+        });
+      } else {
+        alert("Please select an ingredient or batch option first");
+      }
     });
-    
+
     resetButton.addEventListener("click", function() {
       baseIngredientSelect.selectedIndex = 0;
       scalerInput.value = "";
-      ingredientUnit.textContent = "g";
+      ingredientUnit.textContent = "";
       baseIngredient = null;
       baseAmount = 0;
-      
+      mode = null;
+      showQtyButtons(false);
       originalAmounts.forEach(function(data, li) {
         if (data.hasCheckbox && data.label) {
-          const checkbox = data.label.querySelector('input[type="checkbox"]');
-          while (data.label.childNodes.length > 1) {
-            data.label.removeChild(data.label.lastChild);
-          }
+          while (data.label.childNodes.length > 1) data.label.removeChild(data.label.lastChild);
           data.label.appendChild(document.createTextNode(data.originalText));
         } else {
           li.textContent = data.originalText;
@@ -498,6 +706,135 @@ document.addEventListener('DOMContentLoaded', () => {
       // Wrap the image with the newly created link
       img.parentNode.replaceChild(link, img);
       link.appendChild(img);
+    }
+  });
+});
+
+// ── Translation (unofficial Google Translate endpoint) ────────────────────────
+document.addEventListener('DOMContentLoaded', function () {
+  const article = document.querySelector('article');
+  if (!article) return;
+
+  const LANGS = [
+    ['en', 'English'],
+    ['nl', 'Nederlands'],
+    ['ko', '한국어'],
+    ['de', 'Deutsch'],
+    ['fr', 'Français'],
+    ['es', 'Español'],
+    ['ja', '日本語'],
+    ['zh-CN', '中文'],
+  ];
+
+  // Collect all translatable text nodes inside the article
+  function getTextNodes() {
+    const nodes = [];
+    const skip = new Set(['SCRIPT', 'STYLE', 'CODE', 'PRE', 'KBD', 'SAMP']);
+    const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        if (!node.textContent.trim()) return NodeFilter.FILTER_REJECT;
+        const p = node.parentElement;
+        if (!p || skip.has(p.tagName)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    let n;
+    while ((n = walker.nextNode())) nodes.push(n);
+    return nodes;
+  }
+
+  // Translate a single string via unofficial endpoint
+  async function translateText(text, lang) {
+    const url = 'https://translate.googleapis.com/translate_a/single'
+      + '?client=gtx&sl=auto&dt=t'
+      + '&tl=' + encodeURIComponent(lang)
+      + '&q=' + encodeURIComponent(text);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    return data[0].map(function (x) { return x[0]; }).join('');
+  }
+
+  let originalTexts = null;
+
+  async function translatePage(lang) {
+    const nodes = getTextNodes();
+    if (!originalTexts) {
+      originalTexts = nodes.map(function (n) { return n.textContent; });
+    }
+    const texts = nodes.map(function (n) { return n.textContent; });
+    const BATCH = 5;
+    for (let i = 0; i < nodes.length; i += BATCH) {
+      const slice = texts.slice(i, i + BATCH);
+      const results = await Promise.all(slice.map(function (t) {
+        return translateText(t, lang);
+      }));
+      results.forEach(function (translated, j) {
+        nodes[i + j].textContent = translated;
+      });
+    }
+  }
+
+  function revertPage() {
+    if (!originalTexts) return;
+    const nodes = getTextNodes();
+    nodes.forEach(function (n, i) {
+      if (originalTexts[i] !== undefined) n.textContent = originalTexts[i];
+    });
+    originalTexts = null;
+  }
+
+  // Build UI
+  const wrapper = document.createElement('div');
+  wrapper.id = 'translate-controls';
+
+  const sel = document.createElement('select');
+  sel.id = 'translate-lang';
+  LANGS.forEach(function (pair) {
+    const opt = document.createElement('option');
+    opt.value = pair[0];
+    opt.textContent = pair[1];
+    sel.appendChild(opt);
+  });
+
+  const btn = document.createElement('button');
+  btn.id = 'translate-btn';
+  btn.textContent = '🌐 Translate';
+
+  wrapper.appendChild(sel);
+  wrapper.appendChild(btn);
+
+  // Insert after date line (or after h1 if no date)
+  const anchor = article.querySelector('.date') || article.querySelector('h1');
+  if (anchor) anchor.insertAdjacentElement('afterend', wrapper);
+
+  let translated = false;
+  btn.addEventListener('click', async function () {
+    if (translated) {
+      revertPage();
+      btn.textContent = '🌐 Translate';
+      translated = false;
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = '⏳ Translating…';
+    try {
+      await translatePage(sel.value);
+      btn.textContent = '↩ Revert';
+      translated = true;
+    } catch (err) {
+      console.error('Translation failed:', err);
+      btn.textContent = '🌐 Translate';
+    }
+    btn.disabled = false;
+  });
+
+  // Reset state when language is changed after translation
+  sel.addEventListener('change', function () {
+    if (translated) {
+      revertPage();
+      btn.textContent = '🌐 Translate';
+      translated = false;
     }
   });
 });

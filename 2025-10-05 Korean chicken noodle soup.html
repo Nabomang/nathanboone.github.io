@@ -22,38 +22,56 @@
 <h1>Korean chicken noodle soup</h1>
 <p class="date">2025-10-05</p>
 
-<!-- Recipe Scaler -->
-<div class="recipe-scaler">
-  <label for="base-ingredient-select">Scale by: <select id="base-ingredient-select"><option value="">-- Select ingredient --</option></select></label>
-  <label for="scaler-input">I have <input type="number" id="scaler-input" min="0.1" step="0.1" /> <span id="ingredient-unit">g</span></label>
-  <button id="scale-recipe">Scale Recipe</button>
-  <button id="reset-recipe">Reset</button>
+<!-- Recipe Scaler Card -->
+<div class="recipe-card" id="scaler-card">
+  <button class="recipe-card-header" aria-expanded="false">
+    <span>&#9878; Recipe Scaler</span>
+    <span class="toggle-chevron"></span>
+  </button>
+  <div class="recipe-card-body">
+    <div class="recipe-scaler">
+      <div class="scaler-row">
+        <label for="base-ingredient-select">Scale by</label>
+        <select id="base-ingredient-select"><option value="">— select ingredient —</option></select>
+      </div>
+      <div class="scaler-row">
+        <span id="scaler-have-label">I have</span>
+        <button class="qty-btn" id="qty-down" style="display:none;">&#8722;</button>
+        <input type="number" id="scaler-input" min="0.1" step="0.1" />
+        <button class="qty-btn" id="qty-up" style="display:none;">+</button>
+        <span id="ingredient-unit">g</span>
+        <button id="scale-recipe">Scale</button>
+        <button id="reset-recipe">Reset</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Hidden data holder for main recipe image -->
 
 <!-- Hidden data holder for bread timing -->
 
-<!-- Bread timing planner UI -->
+<!-- Bread Planner Card -->
 
 <h3 id="ingredients">Ingredients</h3>
 <ul class="task-list">
-<li><label><input type="checkbox" />Whole chicken</label></li>
-<li><label><input type="checkbox" />Onion pate</label></li>
-<li><label><input type="checkbox" />Green onion</label></li>
-<li><label><input type="checkbox" />Garlic</label></li>
-<li><label><input type="checkbox" />Water</label></li>
-<li><label><input type="checkbox" />Somyeon noodles (toddler) 40 g
-before cooking, 120 g after cooking</label></li>
-<li><label><input type="checkbox" />Somyeon noodles (adult) 100 g before
-cooking</label></li>
+<li><label><input type="checkbox" />1 Whole chicken</label></li>
+<li><label><input type="checkbox" />4 cubes Onion paste</label></li>
+<li><label><input type="checkbox" />30 g Spring onion</label></li>
+<li><label><input type="checkbox" />1 Garlic clove</label></li>
+<li><label><input type="checkbox" />Enough water to submerge the
+chicken</label></li>
+<li><label><input type="checkbox" />40 g Somyeon noodles (toddler), 120
+g after cooking</label></li>
+<li><label><input type="checkbox" />100 g Somyeon noodles
+(adult)</label></li>
 </ul>
 <h3 id="steps">Steps</h3>
 <ol type="1">
 <li>Rinse the chicken thoroughly under running water.</li>
-<li>Take out 4 cubes of onion paste, an appropriate amount of green
+<li>Take out 4 cubes of onion paste, an appropriate amount of spring
 onion, and 1 cube of garlic from the freezer.</li>
-<li>In a large pot, add the prepared chicken, onion jam, green onion,
+<li>In a large pot, add the prepared chicken, onion jam, spring onion,
 garlic, and enough water to cover the chicken. Boil vigorously at level
 5 for 40 minutes. Then reduce to level 3 (medium heat) and simmer for 10
 minutes. If too much water has evaporated, add more water.</li>

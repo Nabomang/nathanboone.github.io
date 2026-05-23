@@ -22,12 +22,29 @@
 <h1>Pizza Dough with Poolish</h1>
 <p class="date">2026-05-21</p>
 
-<!-- Recipe Scaler -->
-<div class="recipe-scaler">
-  <label for="base-ingredient-select">Scale by: <select id="base-ingredient-select"><option value="">-- Select ingredient --</option></select></label>
-  <label for="scaler-input">I have <input type="number" id="scaler-input" min="0.1" step="0.1" /> <span id="ingredient-unit">g</span></label>
-  <button id="scale-recipe">Scale Recipe</button>
-  <button id="reset-recipe">Reset</button>
+<!-- Recipe Scaler Card -->
+<div class="recipe-card" id="scaler-card">
+  <button class="recipe-card-header" aria-expanded="false">
+    <span>&#9878; Recipe Scaler</span>
+    <span class="toggle-chevron"></span>
+  </button>
+  <div class="recipe-card-body">
+    <div class="recipe-scaler" data-base-yield="8" data-yield-unit="pizzas">
+      <div class="scaler-row">
+        <label for="base-ingredient-select">Scale by</label>
+        <select id="base-ingredient-select"><option value="">— select ingredient —</option></select>
+      </div>
+      <div class="scaler-row">
+        <span id="scaler-have-label">I have</span>
+        <button class="qty-btn" id="qty-down" style="display:none;">&#8722;</button>
+        <input type="number" id="scaler-input" min="0.1" step="0.1" />
+        <button class="qty-btn" id="qty-up" style="display:none;">+</button>
+        <span id="ingredient-unit">g</span>
+        <button id="scale-recipe">Scale</button>
+        <button id="reset-recipe">Reset</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Hidden data holder for main recipe image -->
@@ -44,21 +61,31 @@ ferment
 (fridge)" data-step-minutes="960"></span><span data-step-name="Warm
 dough to room
 temp" data-step-minutes="60"></span><span data-step-name="Shape balls
-&amp; proof (preheat oven at 1h
-mark)" data-step-minutes="120"></span><span data-step-name="Bake" data-step-minutes="10"></span></div>
+&amp;
+proof" data-step-minutes="120"></span><span data-step-name="Preheat oven
+with pizza
+stone" data-step-minutes="60" data-step-parallel="true"></span><span data-step-name="Bake" data-step-minutes="10"></span></div>
 
-<!-- Bread timing planner UI -->
-<div class="bread-planner" id="bread-planner" style="display:none;">
-  <strong>Bread Planner</strong>
-  <label for="bread-ready-date">Ready on: <input type="date" id="bread-ready-date" /></label>
-  <label for="bread-ready-time">At: <input type="text" id="bread-ready-time" placeholder="HH:MM or HHMM" maxlength="5" style="width:7rem;" /></label>
-  <button id="bread-calc">Calculate Schedule</button>
-  <div id="bread-schedule"></div>
+<!-- Bread Planner Card -->
+<div class="recipe-card" id="planner-card" style="display:none;">
+  <button class="recipe-card-header" aria-expanded="false">
+    <span>&#128197; Scheduler</span>
+    <span class="toggle-chevron"></span>
+  </button>
+  <div class="recipe-card-body">
+    <div class="bread-planner" id="bread-planner">
+      <label for="bread-ready-date">Ready on: <input type="date" id="bread-ready-date" /></label>
+      <label for="bread-ready-time">At: <input type="text" id="bread-ready-time" placeholder="HH:MM or HHMM" maxlength="5" style="width:7rem;" /></label>
+      <button id="bread-calc">Calculate Schedule</button>
+      <div id="bread-schedule"></div>
+      <button id="bread-download-ics" style="display:none;">&#128197; Download .ics</button>
+    </div>
+  </div>
 </div>
 
 <h3 id="poolish-ingredients">Poolish Ingredients</h3>
 <ul class="task-list">
-<li><label><input type="checkbox" />300 g 00 flour</label></li>
+<li><label><input type="checkbox" />300 g bread flour</label></li>
 <li><label><input type="checkbox" />300 ml water</label></li>
 <li><label><input type="checkbox" />5 g dry yeast (or 6 g fresh
 yeast)</label></li>
@@ -67,20 +94,20 @@ yeast)</label></li>
 <h3 id="pizza-dough-ingredients">Pizza Dough Ingredients</h3>
 <ul class="task-list">
 <li><label><input type="checkbox" />All of the poolish</label></li>
-<li><label><input type="checkbox" />700 g 00 flour</label></li>
+<li><label><input type="checkbox" />700 g bread flour</label></li>
 <li><label><input type="checkbox" />400 ml water</label></li>
-<li><label><input type="checkbox" />30 g sea salt</label></li>
+<li><label><input type="checkbox" />20 g sea salt</label></li>
 <li><label><input type="checkbox" />10 g olive oil</label></li>
 </ul>
 <h3 id="steps">Steps</h3>
-<h4 id="n.1-make-the-poolish">N.1 — Make the Poolish</h4>
+<h4 id="make-the-poolish">1. Make the Poolish</h4>
 <ol type="1">
 <li>Mix water, honey and yeast together until dissolved</li>
 <li>Add flour and mix until no dry flour remains</li>
 <li>Cover and rest 1 hour at room temperature to activate the yeast</li>
 <li>Put in the fridge for 16 to 24 hours</li>
 </ol>
-<h4 id="n.2-make-the-pizza-dough">N.2 — Make the Pizza Dough</h4>
+<h4 id="make-the-pizza-dough">2. Make the Pizza Dough</h4>
 <ol type="1">
 <li>Take poolish out of the fridge (optionally rest 30 minutes to come
 to temperature)</li>
@@ -96,13 +123,14 @@ minutes</li>
 pockets</li>
 <li>Put immediately in the fridge for 16 to 24 hours</li>
 </ol>
-<h4 id="n.3-shape-and-bake">N.3 — Shape and Bake</h4>
+<h4 id="shape-and-bake">3. Shape and Bake</h4>
 <ol type="1">
 <li>Take dough out of the fridge and rest 30 minutes to 1 hour at room
 temperature</li>
-<li>Divide and shape into balls of about 250 g each</li>
-<li>Place balls seam-side down in a floured dough box, close the
-lid</li>
+<li>Divide and shape into balls of about 190 g each. Make sure each ball
+is closed well.</li>
+<li>Place balls seam-side down in a floured dough box, close the lid.
+Make sure they stay moist and don’t dry out.</li>
 <li>Rest at room temperature for 2 to 4 hours (about 2 hours at
 25°C)</li>
 <li>Preheat oven to maximum temperature with pizza stone inside for 1
@@ -110,13 +138,6 @@ hour</li>
 <li>Stretch dough on a semolina-dusted surface</li>
 <li>Add toppings and bake until crust is golden and crunchy</li>
 </ol>
-<h3 id="comment">Comment</h3>
-<p>The double cold fermentation — first in the poolish, then in the full
-dough — is what gives this pizza its flavour and its airy, crispy crust.
-Use 00 flour if you can; regular flour works too. Total time from start
-to eating is around 38 hours, but active work is only about an hour
-spread over two days. The planner above will help you work out exactly
-when to start.</p>
 <p>Source: <a href="https://www.youtube.com/watch?v=u7Hd6ZzKgBM">YouTube
 — Next Level Pizza Dough</a></p>
 
