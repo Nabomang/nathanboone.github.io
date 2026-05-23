@@ -166,7 +166,6 @@ function handleRecipeResize() {
 function setupBreadPlanner() {
   const dataEl = document.getElementById('bread-timing-data');
   if (!dataEl) return;
-  if (dataEl.getAttribute('data-recipe-type') !== 'bread') return;
 
   const stepSpans = Array.from(dataEl.querySelectorAll('span'));
   const stepDefs = stepSpans.map(span => ({
@@ -231,19 +230,11 @@ function setupBreadPlanner() {
     return h + 'h' + (rem ? ' ' + rem + 'm' : '');
   }
 
-  // Helper: format a local datetime as iCal string YYYYMMDDTHHMMSS in given IANA tz
-  function formatIcalLocal(date, tz) {
-    const parts = new Intl.DateTimeFormat('en-US', {
-      timeZone: tz,
-      year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit', second: '2-digit',
-      hour12: false
-    }).formatToParts(date);
-    const p = {};
-    parts.forEach(pt => { p[pt.type] = pt.value; });
-    // Intl may return hour as "24" for midnight — normalise to "00"
-    const hh = p.hour === '24' ? '00' : p.hour;
-    return `${p.year}${p.month}${p.day}T${hh}${p.minute}${p.second}`;
+  // Helper: format a Date as UTC iCal string YYYYMMDDTHHMMSSZ (RFC 5545 compliant, no VTIMEZONE needed)
+  function formatIcalUtc(date) {
+    const pad = n => String(n).padStart(2, '0');
+    return `${date.getUTCFullYear()}${pad(date.getUTCMonth()+1)}${pad(date.getUTCDate())}` +
+           `T${pad(date.getUTCHours())}${pad(date.getUTCMinutes())}${pad(date.getUTCSeconds())}Z`;
   }
 
   let lastSchedule = null;
@@ -315,17 +306,31 @@ function setupBreadPlanner() {
     if (icsBtn) icsBtn.style.display = '';
   });
 
+  // Now button — fills date + time with current local time
+  const nowBtn = document.getElementById('bread-now');
+  if (nowBtn) {
+    nowBtn.addEventListener('click', function () {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      document.getElementById('bread-ready-date').value = `${yyyy}-${mm}-${dd}`;
+      const hh = String(now.getHours()).padStart(2, '0');
+      const min = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('bread-ready-time').value = `${hh}:${min}`;
+    });
+  }
+
   // .ics download
   const icsBtn = document.getElementById('bread-download-ics');
   if (icsBtn) {
     icsBtn.addEventListener('click', function () {
       if (!lastSchedule || !lastReadyAt) return;
 
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const title = document.querySelector('h1') ? document.querySelector('h1').textContent.trim() : 'Recipe';
       const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
       const now = new Date();
-      const stampStr = formatIcalLocal(now, tz);
+      const stampStr = formatIcalUtc(now);
 
       let ics = [
         'BEGIN:VCALENDAR',
@@ -336,14 +341,14 @@ function setupBreadPlanner() {
       ];
 
       lastSchedule.forEach((s, i) => {
-        const startStr = formatIcalLocal(s.start, tz);
-        const endStr = formatIcalLocal(s.end, tz);
+        const startStr = formatIcalUtc(s.start);
+        const endStr = formatIcalUtc(s.end);
         ics = ics.concat([
           'BEGIN:VEVENT',
           `UID:${now.getTime()}-${i}@blog`,
-          `DTSTAMP;TZID=${tz}:${stampStr}`,
-          `DTSTART;TZID=${tz}:${startStr}`,
-          `DTEND;TZID=${tz}:${endStr}`,
+          `DTSTAMP:${stampStr}`,
+          `DTSTART:${startStr}`,
+          `DTEND:${endStr}`,
           `SUMMARY:${s.name}`,
           `DESCRIPTION:${title}`,
           'BEGIN:VALARM',

@@ -29,7 +29,7 @@
     <span class="toggle-chevron"></span>
   </button>
   <div class="recipe-card-body">
-    <div class="recipe-scaler">
+    <div class="recipe-scaler" data-base-yield="6" data-yield-unit="muffins">
       <div class="scaler-row">
         <label for="base-ingredient-select">Scale by</label>
         <select id="base-ingredient-select"><option value="">— select ingredient —</option></select>
@@ -51,9 +51,27 @@
 <div id="recipe-image-data" data-image-src="/images/blueberry_muffin/blueberry_muffin.jpg" data-image-alt="Blueberry
 muffin" style="display:none;"></div>
 
-<!-- Hidden data holder for bread timing -->
-
+<!-- Hidden data holder for bread timing + Scheduler card -->
+<div id="bread-timing-data" data-recipe-type="muffin" style="display:none;"><span data-step-name="Mix
+and fill" data-step-minutes="10"></span><span data-step-name="Bake at
+180C" data-step-minutes="25"></span></div>
 <!-- Bread Planner Card -->
+<div class="recipe-card" id="planner-card" style="display:none;">
+  <button class="recipe-card-header" aria-expanded="false">
+    <span>&#128197; Scheduler</span>
+    <span class="toggle-chevron"></span>
+  </button>
+  <div class="recipe-card-body">
+    <div class="bread-planner" id="bread-planner">
+      <label for="bread-ready-date">Ready on: <input type="date" id="bread-ready-date" /></label>
+      <label for="bread-ready-time">At: <input type="text" id="bread-ready-time" placeholder="HH:MM or HHMM" maxlength="5" style="width:7rem;" /></label>
+      <button id="bread-now">Now</button>
+      <button id="bread-calc">Calculate Schedule</button>
+      <div id="bread-schedule"></div>
+      <button id="bread-download-ics" style="display:none;">&#128197; Download .ics</button>
+    </div>
+  </div>
+</div>
 
 <h3 id="ingredients">Ingredients</h3>
 <ul class="task-list">

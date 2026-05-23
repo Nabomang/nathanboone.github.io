@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NB - 토마토 소스 미트볼</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body class="is-recipe">
+<header>
+<nav>
+<a href="index.html">Home</a>
+ | <a href="homelab.html">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html" class="active">Recipes</a> | <a href="security.html">Security</a> | <a href="whoami.html">About</a>
+</nav>
+</header>
+<main>
+<article>
+
+<h1>토마토 소스 미트볼</h1>
+<p class="date">2025-01-14</p>
+
+<!-- Recipe Scaler Card -->
+<div class="recipe-card" id="scaler-card">
+  <button class="recipe-card-header" aria-expanded="false">
+    <span>&#9878; Recipe Scaler</span>
+    <span class="toggle-chevron"></span>
+  </button>
+  <div class="recipe-card-body">
+    <div class="recipe-scaler">
+      <div class="scaler-row">
+        <label for="base-ingredient-select">Scale by</label>
+        <select id="base-ingredient-select"><option value="">— select ingredient —</option></select>
+      </div>
+      <div class="scaler-row">
+        <span id="scaler-have-label">I have</span>
+        <button class="qty-btn" id="qty-down" style="display:none;">&#8722;</button>
+        <input type="number" id="scaler-input" min="0.1" step="0.1" />
+        <button class="qty-btn" id="qty-up" style="display:none;">+</button>
+        <span id="ingredient-unit">g</span>
+        <button id="scale-recipe">Scale</button>
+        <button id="reset-recipe">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden data holder for main recipe image -->
+
+<!-- Hidden data holder for bread timing + Scheduler card -->
+<div id="bread-timing-data" data-recipe-type="main-dish" style="display:none;"><span data-step-name="Sauté
+onion and garlic" data-step-minutes="5"></span><span data-step-name="Add
+celery and
+carrot" data-step-minutes="10"></span><span data-step-name="Simmer
+sauce" data-step-minutes="40"></span><span data-step-name="Brown
+meatballs" data-step-minutes="10"></span><span data-step-name="Finish
+meatballs in sauce" data-step-minutes="20"></span></div>
+<!-- Bread Planner Card -->
+<div class="recipe-card" id="planner-card" style="display:none;">
+  <button class="recipe-card-header" aria-expanded="false">
+    <span>&#128197; Scheduler</span>
+    <span class="toggle-chevron"></span>
+  </button>
+  <div class="recipe-card-body">
+    <div class="bread-planner" id="bread-planner">
+      <label for="bread-ready-date">Ready on: <input type="date" id="bread-ready-date" /></label>
+      <label for="bread-ready-time">At: <input type="text" id="bread-ready-time" placeholder="HH:MM or HHMM" maxlength="5" style="width:7rem;" /></label>
+      <button id="bread-now">Now</button>
+      <button id="bread-calc">Calculate Schedule</button>
+      <div id="bread-schedule"></div>
+      <button id="bread-download-ics" style="display:none;">&#128197; Download .ics</button>
+    </div>
+  </div>
+</div>
+
+<h3 id="ingredients">Ingredients</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />양파 2개</label></li>
+<li><label><input type="checkbox" />마늘 1 큐브</label></li>
+<li><label><input type="checkbox" />셀러리 4대</label></li>
+<li><label><input type="checkbox" />당근 2개</label></li>
+<li><label><input type="checkbox" />올리브오일 2큰술</label></li>
+<li><label><input type="checkbox" />토마토소스 1병</label></li>
+<li><label><input type="checkbox" />밀가루 1큰술</label></li>
+<li><label><input type="checkbox" />물 400ml</label></li>
+<li><label><input type="checkbox" />말린 오레가노 1작은술</label></li>
+<li><label><input type="checkbox" />말린 타임 1작은술</label></li>
+<li><label><input type="checkbox" />말린 바질 1작은술</label></li>
+<li><label><input type="checkbox" />다진 돼지고기 + 다진
+소고기</label></li>
+<li><label><input type="checkbox" />달걀 1개</label></li>
+<li><label><input type="checkbox" />말린 파슬리 1큰술</label></li>
+<li><label><input type="checkbox" />빵가루 4큰술</label></li>
+<li><label><input type="checkbox" />후추와 파프리카 가루</label></li>
+<li><label><input type="checkbox" />애호박</label></li>
+</ul>
+<h3 id="steps">Steps</h3>
+<ol type="1">
+<li>양파 준비: 양파의 껍질을 벗기고 잘게 썬다</li>
+<li>야채 볶기: 냄비에 올리브오일을 두르고, 양파와 마늘을 넣어 5분간
+부드러워질 때까지 볶는다.</li>
+<li>셀러리와 당근 추가: 셀러리를 잘게 썰고, 당근을 작은 깍둑썰기로
+자른다. 냄비에 넣고 잘 섞은 뒤 10분간 약한 불에서 천천히 볶는다.</li>
+<li>밀가루 추가: 볶은 야채에 밀가루를 뿌리고, 잘 저어 타지 않도록
+한다.</li>
+<li>토마토소스와 물 추가: 토마토소스와 물을 넣고 잘 섞는다.</li>
+<li>말린 허브 추가: 오레가노, 타임, 바질 넣는다. 냄비 뚜껑을 덮고 약한
+불에서 40분 동안 끓인다.</li>
+<li>믹서기로 소스를 갈아 부드럽게 만들다.</li>
+<li>다진 고기 해동: 다진 고기가 냉동 완전히 해동시킨다.</li>
+<li>고기 반죽 준비: 큰 볼에 다진 고기를 넣고 달걀, 말린 파슬리, 빵가루,
+후추, 파프리카 가루, 잘게 썬 애호박을 추가한다. 잘 섞어서 고기 반죽을
+만든다. (호박 1/4 만 쓰시면 됩니다)</li>
+<li>미트볼 모양 만들기: 약 4cm 크기의 미트볼을 굴린다. 손을 살짝 적시면
+고기가 손에 달라붙지 않아 예쁜 모양의 미트볼을 만들 수 있다.</li>
+<li>굽기: 큰 팬에 올리브오일과 버터를 두르고, 중간 불에서 미트볼을 넣어
+겉면이 노릇해질 때까지 굽는다. 내부는 완전히 익지 않아도 된다.</li>
+<li>소스와 미트볼 합치기: 볶은 미트볼을 토마토소스에 넣고 약한 불에서
+20분 동안 끓여 미트볼을 완전히 익힌다.</li>
+</ol>
+
+
+
+
+
+</article>
+</main>
+<footer>
+<p>&copy; <span id="year"></span> Nathan Boone | Code by AI, layout and content by me</p>
+</footer>
+<script src="script.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

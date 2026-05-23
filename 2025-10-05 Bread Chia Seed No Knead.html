@@ -49,7 +49,7 @@
 
 <!-- Hidden data holder for main recipe image -->
 
-<!-- Hidden data holder for bread timing -->
+<!-- Hidden data holder for bread timing + Scheduler card -->
 <div id="bread-timing-data" data-recipe-type="bread" style="display:none;"><span data-step-name="Mix
 &amp; autolyse" data-step-minutes="30"></span><span data-step-name="Add
 yeast &amp; salt,
@@ -61,7 +61,6 @@ mold" data-step-minutes="60"></span><span data-step-name="Preheat oven
 190C with
 steam" data-step-minutes="30" data-step-parallel="true"></span><span data-step-name="Bake" data-step-minutes="35"></span><span data-step-name="Cool
 on rack" data-step-minutes="60"></span></div>
-
 <!-- Bread Planner Card -->
 <div class="recipe-card" id="planner-card" style="display:none;">
   <button class="recipe-card-header" aria-expanded="false">
@@ -72,6 +71,7 @@ on rack" data-step-minutes="60"></span></div>
     <div class="bread-planner" id="bread-planner">
       <label for="bread-ready-date">Ready on: <input type="date" id="bread-ready-date" /></label>
       <label for="bread-ready-time">At: <input type="text" id="bread-ready-time" placeholder="HH:MM or HHMM" maxlength="5" style="width:7rem;" /></label>
+      <button id="bread-now">Now</button>
       <button id="bread-calc">Calculate Schedule</button>
       <div id="bread-schedule"></div>
       <button id="bread-download-ics" style="display:none;">&#128197; Download .ics</button>

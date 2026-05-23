@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NB - 코티지 파이</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body class="is-recipe">
+<header>
+<nav>
+<a href="index.html">Home</a>
+ | <a href="homelab.html">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html" class="active">Recipes</a> | <a href="security.html">Security</a> | <a href="whoami.html">About</a>
+</nav>
+</header>
+<main>
+<article>
+
+<h1>코티지 파이</h1>
+<p class="date">2025-03-24</p>
+
+<!-- Recipe Scaler Card -->
+<div class="recipe-card" id="scaler-card">
+  <button class="recipe-card-header" aria-expanded="false">
+    <span>&#9878; Recipe Scaler</span>
+    <span class="toggle-chevron"></span>
+  </button>
+  <div class="recipe-card-body">
+    <div class="recipe-scaler" data-base-yield="1" data-yield-unit="pie">
+      <div class="scaler-row">
+        <label for="base-ingredient-select">Scale by</label>
+        <select id="base-ingredient-select"><option value="">— select ingredient —</option></select>
+      </div>
+      <div class="scaler-row">
+        <span id="scaler-have-label">I have</span>
+        <button class="qty-btn" id="qty-down" style="display:none;">&#8722;</button>
+        <input type="number" id="scaler-input" min="0.1" step="0.1" />
+        <button class="qty-btn" id="qty-up" style="display:none;">+</button>
+        <span id="ingredient-unit">g</span>
+        <button id="scale-recipe">Scale</button>
+        <button id="reset-recipe">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden data holder for main recipe image -->
+
+<!-- Hidden data holder for bread timing + Scheduler card -->
+<div id="bread-timing-data" data-recipe-type="main-dish" style="display:none;"><span data-step-name="Sauté
+vegetables" data-step-minutes="3"></span><span data-step-name="Simmer
+filling" data-step-minutes="30"></span><span data-step-name="Boil
+potatoes" data-step-minutes="15"></span><span data-step-name="Bake" data-step-minutes="30"></span><span data-step-name="Rest
+before serving" data-step-minutes="5"></span></div>
+<!-- Bread Planner Card -->
+<div class="recipe-card" id="planner-card" style="display:none;">
+  <button class="recipe-card-header" aria-expanded="false">
+    <span>&#128197; Scheduler</span>
+    <span class="toggle-chevron"></span>
+  </button>
+  <div class="recipe-card-body">
+    <div class="bread-planner" id="bread-planner">
+      <label for="bread-ready-date">Ready on: <input type="date" id="bread-ready-date" /></label>
+      <label for="bread-ready-time">At: <input type="text" id="bread-ready-time" placeholder="HH:MM or HHMM" maxlength="5" style="width:7rem;" /></label>
+      <button id="bread-now">Now</button>
+      <button id="bread-calc">Calculate Schedule</button>
+      <div id="bread-schedule"></div>
+      <button id="bread-download-ics" style="display:none;">&#128197; Download .ics</button>
+    </div>
+  </div>
+</div>
+
+<h3 id="ingredients">Ingredients</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />올리브 오일 1 ½큰술</label></li>
+<li><label><input type="checkbox" />마늘 큐브 1개</label></li>
+<li><label><input type="checkbox" />양파 잼 1큐브</label></li>
+<li><label><input type="checkbox" />당근 1개 (잘게 다지기)</label></li>
+<li><label><input type="checkbox" />셀러리 1줄기 (잘게
+다지기)</label></li>
+<li><label><input type="checkbox" />다진 소고기 750g</label></li>
+<li><label><input type="checkbox" />밀가루 40g</label></li>
+<li><label><input type="checkbox" />토마토 페이스트 55g</label></li>
+<li><label><input type="checkbox" />채소 육수 500ml</label></li>
+<li><label><input type="checkbox" />완두콩 ½컵</label></li>
+<li><label><input type="checkbox" />말린 타임 1작은술 (또는 생 타임
+3줄기)</label></li>
+<li><label><input type="checkbox" />월계수잎 2장</label></li>
+<li><label><input type="checkbox" />후추 ½작은술</label></li>
+<li><label><input type="checkbox" />감자 1.2kg 껍질을 벗기고 2.5cm
+크기로 자르기</label></li>
+<li><label><input type="checkbox" />따뜻한 우유 165ml</label></li>
+<li><label><input type="checkbox" />버터 2큰술 30g</label></li>
+</ul>
+<h3 id="steps">Steps</h3>
+<ol type="1">
+<li>채소 육수 1L 만들다. (500 ml 냉장고에 보관하세요)</li>
+<li>큰 팬을 중불로 달군 후, 올리브 오일을 두른다.</li>
+<li>양파, 마늘 큐브, 당근, 셀러리를 넣고 3분간 볶아 부드럽게
+만든다.</li>
+<li>불을 중강불로 올린 후, 다진 소고기를 넣고 잘게 부수면서 익힌다.</li>
+<li>밀가루를 넣어 섞은 후, 토마토 페이스트, 채소 육수, 완두콩, 타임,
+월계수잎, 후추를 넣고 저어준다.</li>
+<li>끓어오르면 불을 중불로 줄이고 약 30분간 졸여 걸쭉한 소스 농도가
+되도록 만든다.</li>
+<li>감자를 냄비에 넣고 15분간 삶아 부드럽게 익힌다.</li>
+<li>물을 버린 후, 냄비를 불에서 내려 30초 정도 증기로 말린다.</li>
+<li>버터를 넣고 으깬 후, 따뜻한 우유를 넣어가며 부드럽게 으깬다.</li>
+<li>오븐을 180°C로 예열한다.</li>
+<li>토마토 소스를 오븐틀에 옮기고 살짝 식힌다. (식으면 감자 으깸을 더
+쉽게 펼칠 수 있음)</li>
+<li>감자 으깸을 고르게 펴고 포크로 살짝 긁어 표면을 거칠게 만든다. (더
+바삭한 표면을 위해)</li>
+<li>올리브 오일을 살짝 뿌린다.</li>
+<li>25~30분간 구워 윗면이 노릇해지고 가장자리가 바글바글 끓어오르면
+완성.</li>
+<li>오븐에 꺼내 5분간 식혀서 제공</li>
+</ol>
+
+
+
+
+
+</article>
+</main>
+<footer>
+<p>&copy; <span id="year"></span> Nathan Boone | Code by AI, layout and content by me</p>
+</footer>
+<script src="script.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
