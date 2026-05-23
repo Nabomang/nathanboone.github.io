@@ -306,22 +306,36 @@ function setupBreadPlanner() {
     if (icsBtn) icsBtn.style.display = '';
   });
 
-  // Now button — fills date + time with current local time
-  const nowBtn = document.getElementById('bread-now');
-  if (nowBtn) {
-    nowBtn.addEventListener('click', function () {
-      const now = new Date();
-      const yyyy = now.getFullYear();
-      const mm = String(now.getMonth() + 1).padStart(2, '0');
-      const dd = String(now.getDate()).padStart(2, '0');
-      document.getElementById('bread-ready-date').value = `${yyyy}-${mm}-${dd}`;
-      const hh = String(now.getHours()).padStart(2, '0');
-      const min = String(now.getMinutes()).padStart(2, '0');
-      document.getElementById('bread-ready-time').value = `${hh}:${min}`;
+  // Now button — fills ready-by as now + total sequential step duration, then auto-calculates
+  // Uses event delegation on planner so it works even inside a collapsed card on Android
+  planner.addEventListener('click', function(e) {
+    if (!e.target || e.target.id !== 'bread-now') return;
+    // Sum live step durations from the editable table (sequential only for the total)
+    let totalMins = 0;
+    stepDefs.forEach((s, i) => {
+      const input = editorDiv.querySelector(`.step-duration-input[data-index="${i}"]`);
+      const unitSel = editorDiv.querySelector(`.step-unit-select[data-index="${i}"]`);
+      const rawVal = input ? parseFloat(input.value) : NaN;
+      const unit = unitSel ? unitSel.value : 'min';
+      const mins = isNaN(rawVal) || rawVal <= 0
+        ? s.minutes
+        : (unit === 'h' ? Math.round(rawVal * 60) : Math.round(rawVal));
+      if (!s.parallel) totalMins += mins;
     });
-  }
+    const readyAt = new Date(Date.now() + totalMins * 60000);
+    const yyyy = readyAt.getFullYear();
+    const mo = String(readyAt.getMonth() + 1).padStart(2, '0');
+    const dd = String(readyAt.getDate()).padStart(2, '0');
+    const hh = String(readyAt.getHours()).padStart(2, '0');
+    const mi = String(readyAt.getMinutes()).padStart(2, '0');
+    document.getElementById('bread-ready-date').value = `${yyyy}-${mo}-${dd}`;
+    document.getElementById('bread-ready-time').value = `${hh}:${mi}`;
+    // Auto-trigger calculate
+    const calcBtn = document.getElementById('bread-calc');
+    if (calcBtn) calcBtn.click();
+  });
 
-  // .ics download
+  // .ics download + Google Calendar links for Android
   const icsBtn = document.getElementById('bread-download-ics');
   if (icsBtn) {
     icsBtn.addEventListener('click', function () {
@@ -371,6 +385,27 @@ function setupBreadPlanner() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+
+      // Show per-step Google Calendar links (reliable on Android)
+      const scheduleDiv = document.getElementById('bread-schedule');
+      if (scheduleDiv) {
+        const existing = scheduleDiv.querySelector('.gcal-links');
+        if (existing) existing.remove();
+        const gcalDiv = document.createElement('div');
+        gcalDiv.className = 'gcal-links';
+        gcalDiv.innerHTML = '<p style="margin-top:0.75rem;font-size:0.82rem;">&#128279; Add to Google Calendar (Android):</p><ul style="margin:0.25rem 0 0 1rem;font-size:0.82rem;">' +
+          lastSchedule.map(s => {
+            const fmt8 = d => formatIcalUtc(d).replace('Z','');
+            const dates = `${fmt8(s.start)}Z/${fmt8(s.end)}Z`;
+            const gcUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE` +
+              `&text=${encodeURIComponent(s.name)}` +
+              `&dates=${encodeURIComponent(dates)}` +
+              `&details=${encodeURIComponent(title)}`;
+            return `<li><a href="${gcUrl}" target="_blank" rel="noopener">${s.name}</a></li>`;
+          }).join('') +
+          '</ul>';
+        scheduleDiv.appendChild(gcalDiv);
+      }
     });
   }
 }

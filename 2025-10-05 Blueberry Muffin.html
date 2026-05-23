@@ -29,7 +29,7 @@
     <span class="toggle-chevron"></span>
   </button>
   <div class="recipe-card-body">
-    <div class="recipe-scaler" data-base-yield="6" data-yield-unit="muffins">
+    <div class="recipe-scaler" data-base-yield="8" data-yield-unit="muffins">
       <div class="scaler-row">
         <label for="base-ingredient-select">Scale by</label>
         <select id="base-ingredient-select"><option value="">— select ingredient —</option></select>
@@ -65,8 +65,8 @@ and fill" data-step-minutes="10"></span><span data-step-name="Bake at
     <div class="bread-planner" id="bread-planner">
       <label for="bread-ready-date">Ready on: <input type="date" id="bread-ready-date" /></label>
       <label for="bread-ready-time">At: <input type="text" id="bread-ready-time" placeholder="HH:MM or HHMM" maxlength="5" style="width:7rem;" /></label>
-      <button id="bread-now">Now</button>
-      <button id="bread-calc">Calculate Schedule</button>
+      <button type="button" id="bread-now">Now</button>
+      <button type="button" id="bread-calc">Calculate Schedule</button>
       <div id="bread-schedule"></div>
       <button id="bread-download-ics" style="display:none;">&#128197; Download .ics</button>
     </div>
@@ -96,7 +96,8 @@ seed</label></li>
 <li>Add all wet ingredients together</li>
 <li>Add all wet ingredients to dry ingredients do not mix too much</li>
 <li>Add all frozen blueberries to the mix</li>
-<li>Put the mix in cupcake form en at 180 Celsius for 25 minutes</li>
+<li>Put the mix in cupcake form (70g each) bake at 180 Celsius for 25
+minutes</li>
 </ol>
 <h3 id="comment">Comment</h3>
 <p>We give this breakfast blueberry muffin almost every morning to our 2
