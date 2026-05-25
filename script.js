@@ -169,7 +169,7 @@ function setupBreadPlanner() {
 
   const stepSpans = Array.from(dataEl.querySelectorAll('span'));
   const stepDefs = stepSpans.map(span => ({
-    name: span.getAttribute('data-step-name'),
+    name: (span.getAttribute('data-step-name') || '').replace(/\s+/g, ' ').trim(),
     minutes: parseInt(span.getAttribute('data-step-minutes'), 10),
     parallel: span.getAttribute('data-step-parallel') === 'true'
   }));
@@ -385,27 +385,6 @@ function setupBreadPlanner() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-
-      // Show per-step Google Calendar links (reliable on Android)
-      const scheduleDiv = document.getElementById('bread-schedule');
-      if (scheduleDiv) {
-        const existing = scheduleDiv.querySelector('.gcal-links');
-        if (existing) existing.remove();
-        const gcalDiv = document.createElement('div');
-        gcalDiv.className = 'gcal-links';
-        gcalDiv.innerHTML = '<p style="margin-top:0.75rem;font-size:0.82rem;">&#128279; Add to Google Calendar (Android):</p><ul style="margin:0.25rem 0 0 1rem;font-size:0.82rem;">' +
-          lastSchedule.map(s => {
-            const fmt8 = d => formatIcalUtc(d).replace('Z','');
-            const dates = `${fmt8(s.start)}Z/${fmt8(s.end)}Z`;
-            const gcUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE` +
-              `&text=${encodeURIComponent(s.name)}` +
-              `&dates=${encodeURIComponent(dates)}` +
-              `&details=${encodeURIComponent(title)}`;
-            return `<li><a href="${gcUrl}" target="_blank" rel="noopener">${s.name}</a></li>`;
-          }).join('') +
-          '</ul>';
-        scheduleDiv.appendChild(gcalDiv);
-      }
     });
   }
 }
