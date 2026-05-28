@@ -499,7 +499,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const label = li.querySelector("label");
         const checkbox = li.querySelector('input[type="checkbox"]');
         const text = (label ? label.textContent : li.textContent).trim().replace(/\s+/g, ' ');
-        const match = text.match(/^(\d+(?:\.\d+)?)\s*(g|kg|ml|l|cup|cups|tbsp|tsp|oz|lb|lbs)?\s+(.+)$/i);
+        const match = text.match(/^(\d+(?:\.\d+)?)\s*(g|kg|ml|l|cup|cups|tbsp|tsp|oz|lb|lbs|개|대|큰술|작은술|컵|줄기|장|쪽|인분|조각)?\s+(.+)$/i);
         if (!match) return;
         const amount = parseFloat(match[1]);
         const unit = match[2] || "";

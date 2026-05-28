@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NB - 샐러리 듬뿍 토마토 스튜</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body class="is-recipe">
+<header>
+<nav>
+<a href="index.html">Home</a>
+ | <a href="homelab.html">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html" class="active">Recipes</a> | <a href="security.html">Security</a> | <a href="whoami.html">About</a>
+</nav>
+</header>
+<main>
+<article>
+
+<h1>샐러리 듬뿍 토마토 스튜</h1>
+<p class="date">2026-05-28</p>
+
+<!-- Recipe Scaler Card -->
+<div class="recipe-card" id="scaler-card">
+  <button class="recipe-card-header" aria-expanded="false">
+    <span>&#9878; Recipe Scaler</span>
+    <span class="toggle-chevron"></span>
+  </button>
+  <div class="recipe-card-body">
+    <div class="recipe-scaler" data-base-yield="2" data-yield-unit="servings">
+      <div class="scaler-row">
+        <label for="base-ingredient-select">Scale by</label>
+        <select id="base-ingredient-select"><option value="">— select ingredient —</option></select>
+      </div>
+      <div class="scaler-row">
+        <span id="scaler-have-label">I have</span>
+        <button class="qty-btn" id="qty-down" style="display:none;">&#8722;</button>
+        <input type="number" id="scaler-input" min="0.1" step="0.1" />
+        <button class="qty-btn" id="qty-up" style="display:none;">+</button>
+        <span id="ingredient-unit">g</span>
+        <button id="scale-recipe">Scale</button>
+        <button id="reset-recipe">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden data holder for main recipe image -->
+
+<!-- Hidden data holder for bread timing + Scheduler card -->
+<div id="bread-timing-data" data-recipe-type="main-dish" style="display:none;"><span data-step-name="채소
+손질" data-step-minutes="15"></span><span data-step-name="고기
+굽기" data-step-minutes="5"></span><span data-step-name="채소
+볶기" data-step-minutes="10"></span><span data-step-name="토마토소스
+볶기" data-step-minutes="3"></span><span data-step-name="약불로
+끓이기" data-step-minutes="35"></span></div>
+<!-- Bread Planner Card -->
+<div class="recipe-card" id="planner-card" style="display:none;">
+  <button class="recipe-card-header" aria-expanded="false">
+    <span>&#128197; Scheduler</span>
+    <span class="toggle-chevron"></span>
+  </button>
+  <div class="recipe-card-body">
+    <div class="bread-planner" id="bread-planner">
+      <label for="bread-ready-date">Ready on: <input type="date" id="bread-ready-date" /></label>
+      <label for="bread-ready-time">At: <input type="text" id="bread-ready-time" placeholder="HH:MM or HHMM" maxlength="5" style="width:7rem;" /></label>
+      <button type="button" id="bread-now">Now</button>
+      <button type="button" id="bread-calc">Calculate Schedule</button>
+      <div id="bread-schedule"></div>
+      <button id="bread-download-ics" style="display:none;">&#128197; Download .ics</button>
+    </div>
+  </div>
+</div>
+
+<h3 id="ingredients">Ingredients</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />400 g 돼지고기 앞다리살</label></li>
+<li><label><input type="checkbox" />소금/후추 약간</label></li>
+<li><label><input type="checkbox" />7 대 샐러리</label></li>
+<li><label><input type="checkbox" />1 개 양파</label></li>
+<li><label><input type="checkbox" />1 개 당근</label></li>
+<li><label><input type="checkbox" />1 큰술 다진마늘</label></li>
+<li><label><input type="checkbox" />500 g 토마토소스</label></li>
+<li><label><input type="checkbox" />400 ml 치킨 스톡 푼 물</label></li>
+</ul>
+<h3 id="prep">Prep</h3>
+<ul>
+<li><strong>샐러리</strong>: 표면의 섬유질을 벗겨낸 후 1cm 크기로
+썰기</li>
+<li><strong>양파</strong>: 1~1.5cm 정도로 큼직하게 깍둑썰기</li>
+<li><strong>당근</strong>: 반달 또는 작은 깍둑썰기</li>
+<li><strong>돼지고기</strong>: 한입 크기로 자르고 지방이 너무 많으면
+일부 제거</li>
+</ul>
+<h3 id="steps">Steps</h3>
+<ol type="1">
+<li>돼지고기에 소금, 후추로 밑간한다.</li>
+<li>냄비를 중강불로 달군 후 고기를 노릇하게 굽고 꺼내 둔다.</li>
+<li>같은 냄비에 양파를 넣고 볶다가, 당근 → 샐러리 → 다진마늘 순으로
+넣는다.</li>
+<li>중불에서 10분 이상 충분히 볶는다.</li>
+<li>토마토소스를 넣고 2~3분 더 볶는다.</li>
+<li>고기를 다시 넣고 치킨 스톡 푼 물을 넣는다.</li>
+<li>약불로 줄이고 30~40분 끓인다.</li>
+</ol>
+
+
+
+
+
+</article>
+</main>
+<footer>
+<p>&copy; <span id="year"></span> Nathan Boone | Code by AI, layout and content by me</p>
+</footer>
+<script src="script.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
