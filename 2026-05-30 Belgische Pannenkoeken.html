@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>NB - Belgische Pannenkoeken</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body class="is-recipe">
+<header>
+<nav>
+<a href="index.html">Home</a>
+ | <a href="homelab.html">Homelab</a> | <a href="korea.html">Korea</a> | <a href="recipes.html" class="active">Recipes</a> | <a href="security.html">Security</a> | <a href="whoami.html">About</a>
+</nav>
+</header>
+<main>
+<article>
+
+<h1>Belgische Pannenkoeken</h1>
+<p class="date">2026-05-30</p>
+
+<!-- Recipe Scaler Card -->
+<div class="recipe-card" id="scaler-card">
+  <button class="recipe-card-header" aria-expanded="false">
+    <span>&#9878; Recipe Scaler</span>
+    <span class="toggle-chevron"></span>
+  </button>
+  <div class="recipe-card-body">
+    <div class="recipe-scaler" data-base-yield="5" data-yield-unit="pannenkoeken">
+      <div class="scaler-row">
+        <label for="base-ingredient-select">Scale by</label>
+        <select id="base-ingredient-select"><option value="">— select ingredient —</option></select>
+      </div>
+      <div class="scaler-row">
+        <span id="scaler-have-label">I have</span>
+        <button class="qty-btn" id="qty-down" style="display:none;">&#8722;</button>
+        <input type="number" id="scaler-input" min="0.1" step="0.1" />
+        <button class="qty-btn" id="qty-up" style="display:none;">+</button>
+        <span id="ingredient-unit">g</span>
+        <button id="scale-recipe">Scale</button>
+        <button id="reset-recipe">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden data holder for main recipe image -->
+
+<!-- Hidden data holder for bread timing + Scheduler card -->
+<div id="bread-timing-data" data-recipe-type="breakfast" style="display:none;"><span data-step-name="Beslag
+maken" data-step-minutes="10"></span><span data-step-name="Bakken" data-step-minutes="20"></span></div>
+<!-- Bread Planner Card -->
+<div class="recipe-card" id="planner-card" style="display:none;">
+  <button class="recipe-card-header" aria-expanded="false">
+    <span>&#128197; Scheduler</span>
+    <span class="toggle-chevron"></span>
+  </button>
+  <div class="recipe-card-body">
+    <div class="bread-planner" id="bread-planner">
+      <label for="bread-ready-date">Ready on: <input type="date" id="bread-ready-date" /></label>
+      <label for="bread-ready-time">At: <input type="text" id="bread-ready-time" placeholder="HH:MM or HHMM" maxlength="5" style="width:7rem;" /></label>
+      <button type="button" id="bread-now">Now</button>
+      <button type="button" id="bread-calc">Calculate Schedule</button>
+      <div id="bread-schedule"></div>
+      <button id="bread-download-ics" style="display:none;">&#128197; Download .ics</button>
+    </div>
+  </div>
+</div>
+
+<h3 id="ingredients">Ingredients</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />100 g zelfrijzende
+bloem</label></li>
+<li><label><input type="checkbox" />175 ml volle melk</label></li>
+<li><label><input type="checkbox" />75 ml spuitwater</label></li>
+<li><label><input type="checkbox" />snuifje zout</label></li>
+<li><label><input type="checkbox" />0.5 zakje vanillesuiker</label></li>
+<li><label><input type="checkbox" />1 groot ei</label></li>
+<li><label><input type="checkbox" />15 g gesmolten boter + extra om te
+bakken</label></li>
+</ul>
+<h3 id="steps">Steps</h3>
+<ol type="1">
+<li>Doe de bloem, vanillesuiker en zout in een grote kom.</li>
+<li>Giet iets meer dan de helft van de melk bij de bloem.</li>
+<li>Klop goed door elkaar zodat er geen klonters meer zijn.</li>
+<li>Klop er het ei onder, de rest van de melk en de gesmolten boter. Heb
+je nog klonters, zeef of mix het beslag. Roer er tot slot het spuitwater
+onder.</li>
+<li>Warm een koekenpan op en voeg een klontje boter toe. Smeer met een
+borsteltje de volledige pan in.</li>
+<li>Neem een kleine pollepel beslag en giet in de pan. Maak met een
+draaiende beweging een volledig bedekte bodem.</li>
+<li>Maak de pannenkoek niet te dik.</li>
+<li>Laat de pannenkoek kleuren, draai om en bak nog even verder.</li>
+</ol>
+<h3 id="notes">Notes</h3>
+<ul>
+<li>Bron: <a
+href="https://www.sofiedumont.be/pages/basisrecept-pannenkoeken">https://www.sofiedumont.be/pages/basisrecept-pannenkoeken</a></li>
+</ul>
+
+
+
+
+
+</article>
+</main>
+<footer>
+<p>&copy; <span id="year"></span> Nathan Boone | Code by AI, layout and content by me</p>
+</footer>
+<script src="script.js"></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
