@@ -333,6 +333,35 @@
       text-align: center;
     }
 
+    .timer-mode-slider {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      margin-bottom: 14px;
+      padding: 4px;
+      background: #e8f0fb;
+      border-radius: 999px;
+    }
+
+    .timer-mode-button {
+      min-height: 38px;
+      padding: 7px 10px;
+      color: #52657e;
+      font: inherit;
+      font-size: 0.84rem;
+      font-weight: 750;
+      background: transparent;
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .timer-mode-button.active {
+      color: #173b6d;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(27, 45, 75, 0.18);
+    }
+
     .timer-display {
       margin: 0;
       color: #1b2d4b;
@@ -820,7 +849,7 @@
     <header class="topbar">
       <div class="brand">
         <h1>Training Platform</h1>
-        <p>Do not use AI, only read the content in the links and take notes for 15 minutes. Force yourself to explain what you learned out loud for less then 2 minutes.</p>
+        <p>Do not use AI: study a topic, then explain what you learned out loud.</p>
       </div>
 
       <nav class="mode-switcher" aria-label="Application mode">
@@ -851,6 +880,10 @@
         </section>
 
         <aside class="card timer-card">
+          <div class="timer-mode-slider" role="group" aria-label="Timer mode">
+            <button id="studyTimerModeButton" class="timer-mode-button active" type="button">Study · 15 min</button>
+            <button id="talkTimerModeButton" class="timer-mode-button" type="button">Talk · 2 min</button>
+          </div>
           <div id="timerDisplay" class="timer-display">15:00</div>
           <p id="timerStatus" class="timer-status"></p>
 
@@ -906,13 +939,20 @@
         </div>
 
         <div class="timer-setting">
-          <strong>Timer length:</strong>
+          <strong>Study timer:</strong>
 
-          <label class="visually-hidden" for="timerMinutesInput">Timer length in minutes</label>
-          <input id="timerMinutesInput" class="timer-setting-input" type="number" min="1" max="240" step="1" />
+          <label class="visually-hidden" for="studyMinutesInput">Study timer length in minutes</label>
+          <input id="studyMinutesInput" class="timer-setting-input" type="number" min="1" max="240" step="1" />
 
           <span class="timer-setting-note">minutes</span>
-          <button id="saveTimerLengthButton" class="button small secondary" type="button">Update Timer Length</button>
+
+          <strong>Talk timer:</strong>
+
+          <label class="visually-hidden" for="talkMinutesInput">Talk timer length in minutes</label>
+          <input id="talkMinutesInput" class="timer-setting-input" type="number" min="1" max="240" step="1" />
+
+          <span class="timer-setting-note">minutes</span>
+          <button id="saveTimerLengthsButton" class="button small secondary" type="button">Update Timers</button>
         </div>
 
         <div id="importPanel" class="import-panel">
@@ -1065,13 +1105,14 @@
 ];
 
     let topics = [];
-    let settings = { timerMinutes: 15 };
+    let settings = { studyMinutes: 15, talkMinutes: 2 };
+    let activeTimerMode = "study";
     let selectedCategory = "All";
     let hideCompletedTopics = false;
     let rouletteTopicId = null;
     let rouletteRunning = false;
     let sortState = { key: null, direction: "asc" };
-    let remainingSeconds = 900;
+    let remainingSeconds = settings.studyMinutes * 60;
     let timerIntervalId = null;
 
     function createId() {
@@ -1129,23 +1170,38 @@
       try {
         const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY));
 
-        if (
-          savedSettings &&
-          Number.isInteger(savedSettings.timerMinutes) &&
-          savedSettings.timerMinutes >= 1 &&
-          savedSettings.timerMinutes <= 240
-        ) {
-          settings.timerMinutes = savedSettings.timerMinutes;
+        if (savedSettings) {
+          const legacyTimerMinutes = savedSettings.timerMinutes;
+          const studyMinutes = savedSettings.studyMinutes;
+          const talkMinutes = savedSettings.talkMinutes;
+
+          if (Number.isInteger(studyMinutes) && studyMinutes >= 1 && studyMinutes <= 240) {
+            settings.studyMinutes = studyMinutes;
+          } else if (Number.isInteger(legacyTimerMinutes) && legacyTimerMinutes >= 1 && legacyTimerMinutes <= 240) {
+            settings.studyMinutes = legacyTimerMinutes;
+          }
+
+          if (Number.isInteger(talkMinutes) && talkMinutes >= 1 && talkMinutes <= 240) {
+            settings.talkMinutes = talkMinutes;
+          }
         }
       } catch {
-        settings.timerMinutes = 15;
+        settings = { studyMinutes: 15, talkMinutes: 2 };
       }
 
-      remainingSeconds = settings.timerMinutes * 60;
+      remainingSeconds = getActiveTimerMinutes() * 60;
     }
 
     function saveSettings() {
       localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+    }
+
+    function getActiveTimerMinutes() {
+      return activeTimerMode === "study" ? settings.studyMinutes : settings.talkMinutes;
+    }
+
+    function getActiveTimerLabel() {
+      return activeTimerMode === "study" ? "Study" : "Talk";
     }
 
     function loadTopics() {
@@ -1462,11 +1518,33 @@
       document.getElementById("timerDisplay").textContent = formatTime(remainingSeconds);
     }
 
+    function renderTimerMode() {
+      const isStudy = activeTimerMode === "study";
+      const studyButton = document.getElementById("studyTimerModeButton");
+      const talkButton = document.getElementById("talkTimerModeButton");
+
+      studyButton.classList.toggle("active", isStudy);
+      talkButton.classList.toggle("active", !isStudy);
+      studyButton.textContent = `Study · ${settings.studyMinutes} min`;
+      talkButton.textContent = `Talk · ${settings.talkMinutes} min`;
+    }
+
+    function setTimerMode(mode) {
+      if (mode === activeTimerMode) return;
+
+      pauseTimer();
+      activeTimerMode = mode;
+      remainingSeconds = getActiveTimerMinutes() * 60;
+      document.getElementById("timerStatus").textContent = "";
+      renderTimerMode();
+      renderTimer();
+    }
+
     function startTimer() {
       if (timerIntervalId !== null) return;
 
       if (remainingSeconds <= 0) {
-        remainingSeconds = settings.timerMinutes * 60;
+        remainingSeconds = getActiveTimerMinutes() * 60;
       }
 
       document.getElementById("timerStatus").textContent = "";
@@ -1479,8 +1557,8 @@
           pauseTimer();
           remainingSeconds = 0;
           renderTimer();
-          document.getElementById("timerStatus").textContent = "Session complete.";
-          window.alert("Your study session is complete.");
+          document.getElementById("timerStatus").textContent = getActiveTimerLabel() + " session complete.";
+          window.alert("Your " + getActiveTimerLabel().toLowerCase() + " session is complete.");
         }
       }, 1000);
     }
@@ -1491,31 +1569,36 @@
         timerIntervalId = null;
       }
 
-      if (remainingSeconds > 0 && remainingSeconds < settings.timerMinutes * 60) {
+      if (remainingSeconds > 0 && remainingSeconds < getActiveTimerMinutes() * 60) {
         document.getElementById("timerStatus").textContent = "Timer paused";
       }
     }
 
     function resetTimer() {
       pauseTimer();
-      remainingSeconds = settings.timerMinutes * 60;
+      remainingSeconds = getActiveTimerMinutes() * 60;
       renderTimer();
       document.getElementById("timerStatus").textContent = "";
     }
 
-    function saveTimerLength() {
-      const input = document.getElementById("timerMinutesInput");
-      const minutes = Number(input.value);
+    function saveTimerLengths() {
+      const studyMinutes = Number(document.getElementById("studyMinutesInput").value);
+      const talkMinutes = Number(document.getElementById("talkMinutesInput").value);
 
-      if (!Number.isInteger(minutes) || minutes < 1 || minutes > 240) {
-        showStatus("Enter a timer length between 1 and 240 minutes.", "error");
+      if (
+        !Number.isInteger(studyMinutes) || studyMinutes < 1 || studyMinutes > 240 ||
+        !Number.isInteger(talkMinutes) || talkMinutes < 1 || talkMinutes > 240
+      ) {
+        showStatus("Enter Study and Talk timer lengths between 1 and 240 minutes.", "error");
         return;
       }
 
-      settings.timerMinutes = minutes;
+      settings.studyMinutes = studyMinutes;
+      settings.talkMinutes = talkMinutes;
       saveSettings();
       resetTimer();
-      showStatus("Timer length saved.", "success");
+      renderTimerMode();
+      showStatus("Study and Talk timer lengths saved.", "success");
     }
 
     function getAdminTopics() {
@@ -2017,8 +2100,10 @@
     document.getElementById("startTimerButton").addEventListener("click", startTimer);
     document.getElementById("pauseTimerButton").addEventListener("click", pauseTimer);
     document.getElementById("resetTimerButton").addEventListener("click", resetTimer);
+    document.getElementById("studyTimerModeButton").addEventListener("click", () => setTimerMode("study"));
+    document.getElementById("talkTimerModeButton").addEventListener("click", () => setTimerMode("talk"));
 
-    document.getElementById("saveTimerLengthButton").addEventListener("click", saveTimerLength);
+    document.getElementById("saveTimerLengthsButton").addEventListener("click", saveTimerLengths);
 
     document.getElementById("gameSearch").addEventListener("input", renderGameTopics);
     document.getElementById("adminSearch").addEventListener("input", renderAdminTable);
@@ -2110,8 +2195,10 @@
     loadSettings();
     loadTopics();
 
-    document.getElementById("timerMinutesInput").value = settings.timerMinutes;
+    document.getElementById("studyMinutesInput").value = settings.studyMinutes;
+    document.getElementById("talkMinutesInput").value = settings.talkMinutes;
 
+    renderTimerMode();
     renderTimer();
     renderGameTopics();
     renderAdminTable();
