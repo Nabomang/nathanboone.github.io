@@ -935,6 +935,7 @@
             <button id="exportButton" class="button secondary" type="button">Export CSV</button>
             <button id="importToggleButton" class="button secondary" type="button">Import CSV</button>
             <button id="defaultsButton" class="button secondary" type="button">Download Defaults</button>
+            <button id="refreshDefaultsButton" class="button secondary" type="button">Refresh Defaults</button>
           </div>
         </div>
 
@@ -1156,6 +1157,12 @@
           : [],
         completed: topic.completed === true
       };
+    }
+
+    function getTopicCompletionKey(topic) {
+      return [topic.name, topic.category]
+        .map(value => String(value || "").trim().toLowerCase())
+        .join("\u0000");
     }
 
     function cloneDefaults() {
@@ -1957,6 +1964,34 @@
       showStatus("Default training materials CSV downloaded.", "success");
     }
 
+    function refreshDefaults() {
+      const confirmed = window.confirm(
+        "Refresh to the latest default topics? Locally added or edited topics will be removed, but completed status for matching topics will be kept."
+      );
+
+      if (!confirmed) return;
+
+      const completedTopicKeys = new Set(
+        topics
+          .filter(topic => topic.completed)
+          .map(getTopicCompletionKey)
+      );
+
+      localStorage.removeItem(TOPICS_STORAGE_KEY);
+      topics = cloneDefaults().map(topic => ({
+        ...topic,
+        completed: completedTopicKeys.has(getTopicCompletionKey(topic))
+      }));
+      rouletteTopicId = null;
+      selectedCategory = "All";
+      saveTopics();
+
+      renderGameTopics();
+      renderRouletteTopic();
+      renderAdminTable();
+      showStatus("Latest default topics loaded. Completed status was kept.", "success");
+    }
+
     function parseCSV(text) {
       const rows = [];
       let row = [];
@@ -2164,6 +2199,7 @@
     document.getElementById("addTopicButton").addEventListener("click", addTopic);
     document.getElementById("exportButton").addEventListener("click", exportCSV);
     document.getElementById("defaultsButton").addEventListener("click", downloadDefaults);
+    document.getElementById("refreshDefaultsButton").addEventListener("click", refreshDefaults);
 
     document.getElementById("importToggleButton").addEventListener("click", function () {
       document.getElementById("importPanel").classList.toggle("open");
