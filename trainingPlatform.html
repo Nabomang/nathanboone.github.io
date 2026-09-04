@@ -1114,6 +1114,7 @@
     let sortState = { key: null, direction: "asc" };
     let remainingSeconds = settings.studyMinutes * 60;
     let timerIntervalId = null;
+    let completionAudioContext = null;
 
     function createId() {
       return "topic-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 9);
@@ -1520,6 +1521,42 @@
       document.title = formattedTime;
     }
 
+    function prepareCompletionSound() {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+
+      if (!AudioContext || completionAudioContext) return;
+
+      completionAudioContext = new AudioContext();
+
+      if (completionAudioContext.state === "suspended") {
+        completionAudioContext.resume().catch(() => {});
+      }
+    }
+
+    function playCompletionSound() {
+      if (!completionAudioContext || completionAudioContext.state === "closed") return;
+
+      const now = completionAudioContext.currentTime;
+
+      [0, 0.34, 0.68].forEach((offset, index) => {
+        const oscillator = completionAudioContext.createOscillator();
+        const gain = completionAudioContext.createGain();
+        const startTime = now + offset;
+        const endTime = startTime + 0.22;
+
+        oscillator.type = "sine";
+        oscillator.frequency.value = index === 2 ? 1046.5 : 783.99;
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.22, startTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, endTime);
+
+        oscillator.connect(gain);
+        gain.connect(completionAudioContext.destination);
+        oscillator.start(startTime);
+        oscillator.stop(endTime);
+      });
+    }
+
     function renderTimerMode() {
       const isStudy = activeTimerMode === "study";
       const studyButton = document.getElementById("studyTimerModeButton");
@@ -1545,6 +1582,8 @@
     function startTimer() {
       if (timerIntervalId !== null) return;
 
+      prepareCompletionSound();
+
       if (remainingSeconds <= 0) {
         remainingSeconds = getActiveTimerMinutes() * 60;
       }
@@ -1560,7 +1599,8 @@
           remainingSeconds = 0;
           renderTimer();
           document.getElementById("timerStatus").textContent = getActiveTimerLabel() + " session complete.";
-          window.alert("Your " + getActiveTimerLabel().toLowerCase() + " session is complete.");
+          document.title = "TIME'S UP!";
+          playCompletionSound();
         }
       }, 1000);
     }
