@@ -1,0 +1,2121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Training Platform</title>
+
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-muted: #f7faff;
+      --text: #172033;
+      --muted: #64738d;
+      --border: #dbe4f0;
+      --primary: #1769d1;
+      --primary-dark: #1056b2;
+      --success: #147b4e;
+      --danger: #b92d2d;
+      --radius: 14px;
+      --topic-card-width: 280px;
+      --topic-card-padding: 15px;
+      --shadow: 0 10px 26px rgba(24, 45, 82, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.58;
+    }
+
+    .app {
+      width: min(1440px, calc(100% - 32px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 26px 0 34px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      max-width: 800px;
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .mode-switcher {
+      display: flex;
+      flex: 0 0 auto;
+      gap: 4px;
+      padding: 5px;
+      background: #e7edf7;
+      border-radius: 11px;
+    }
+
+    .mode-button {
+      padding: 9px 14px;
+      color: #516078;
+      font-weight: 750;
+      background: transparent;
+      border: 0;
+      border-radius: 8px;
+    }
+
+    .mode-button.active {
+      color: var(--primary);
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(23, 43, 80, 0.12);
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .card {
+      padding: 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 40px;
+      padding: 9px 14px;
+      color: #fff;
+      font-weight: 750;
+      background: var(--primary);
+      border: 1px solid var(--primary);
+      border-radius: 9px;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+
+    .button:hover:not(:disabled) {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .button.secondary {
+      color: #35445d;
+      background: #fff;
+      border-color: #cbd7e6;
+    }
+
+    .button.secondary:hover:not(:disabled) {
+      background: #f6f9fd;
+    }
+
+    .button.danger {
+      color: var(--danger);
+      background: #fff0f0;
+      border-color: #efbbbb;
+    }
+
+    .button.small {
+      min-height: 33px;
+      padding: 6px 10px;
+      font-size: 0.82rem;
+    }
+
+    .section-heading {
+      margin: 0;
+      font-size: 1.22rem;
+      letter-spacing: -0.02em;
+    }
+
+    .section-description {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .button-row.center {
+      justify-content: center;
+    }
+
+    .status-message {
+      position: fixed;
+      z-index: 100;
+      right: 22px;
+      bottom: 22px;
+      display: none;
+      max-width: min(460px, calc(100% - 44px));
+      padding: 11px 13px;
+      font-size: 0.9rem;
+      font-weight: 650;
+      border-radius: 8px;
+      box-shadow: 0 8px 22px rgba(20, 35, 65, 0.14);
+    }
+
+    .status-message.visible {
+      display: block;
+    }
+
+    .status-message.success {
+      color: #12613e;
+      background: #eaf8f0;
+      border: 1px solid #bae8d0;
+    }
+
+    .status-message.error {
+      color: #982525;
+      background: #fff0f0;
+      border: 1px solid #f1c0c0;
+    }
+
+    /* Game Mode */
+
+    .game-top-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.75fr) minmax(275px, 0.7fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .roulette-card {
+      background:
+        radial-gradient(circle at top right, rgba(23, 105, 209, 0.14), transparent 38%),
+        #fff;
+    }
+
+    .roulette-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .roulette-header h2 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .avoid-completed {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #42536d;
+      font-size: 0.84rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .avoid-completed input,
+    .completion-control input,
+    .admin-completed input {
+      accent-color: var(--success);
+    }
+
+    .roulette-result {
+      display: grid;
+      min-height: 170px;
+      padding: var(--topic-card-padding);
+      overflow: hidden;
+      background: #f8fbff;
+      border: 1px dashed #c7d9ef;
+      border-radius: 11px;
+    }
+
+    .roulette-placeholder {
+      display: grid;
+      min-height: 120px;
+      place-items: center;
+      margin: 0;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .roulette-ticker {
+      display: grid;
+      min-height: 120px;
+      place-items: center;
+      text-align: center;
+    }
+
+    .roulette-ticker-name {
+      margin: 0;
+      color: var(--primary);
+      font-size: clamp(1.35rem, 3.5vw, 2.05rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      animation: ticker-pulse 0.16s ease-out;
+    }
+
+    .roulette-ticker-status {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .roulette-final-reveal {
+      animation: final-reveal 0.42s ease-out both;
+    }
+
+    @keyframes ticker-pulse {
+      from {
+        opacity: 0.35;
+        transform: translateY(9px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes final-reveal {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .timer-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .timer-display {
+      margin: 0;
+      color: #1b2d4b;
+      font-size: clamp(3.4rem, 7vw, 5rem);
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.08em;
+    }
+
+    .timer-status {
+      min-height: 20px;
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .browser-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .guidance {
+      max-width: 760px;
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .browse-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .search-input {
+      width: min(390px, 100%);
+      min-height: 42px;
+      padding: 9px 12px;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid #cad7e7;
+      border-radius: 9px;
+      outline: none;
+    }
+
+    .search-input:focus,
+    .field:focus,
+    .timer-setting-input:focus {
+      border-color: #76a6ec;
+      box-shadow: 0 0 0 3px rgba(23, 105, 209, 0.12);
+    }
+
+    .category-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .category-button {
+      padding: 8px 12px;
+      color: #42536d;
+      font-size: 0.86rem;
+      font-weight: 750;
+      background: #fff;
+      border: 1px solid #d0dce9;
+      border-radius: 999px;
+    }
+
+    .category-button:hover {
+      color: var(--primary);
+      border-color: #91b8eb;
+      background: #f7fbff;
+    }
+
+    .category-button.active {
+      color: #fff;
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .topic-browser-title {
+      margin: 0 0 12px;
+      font-size: 1rem;
+    }
+
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, var(--topic-card-width));
+      justify-content: start;
+      gap: 14px;
+    }
+
+    .topic-card {
+      min-width: 0;
+      padding: var(--topic-card-padding);
+      background: #fff;
+      border: 1px solid #dce5f1;
+      border-radius: 11px;
+    }
+
+    .topic-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 11px;
+    }
+
+    .topic-card h4 {
+      margin: 0;
+      font-size: 1rem;
+      letter-spacing: -0.015em;
+    }
+
+    .topic-category {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 0.79rem;
+      font-weight: 650;
+    }
+
+    .completion-control {
+      display: inline-flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 5px;
+      color: var(--success);
+      font-size: 0.76rem;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .resource-list {
+      display: grid;
+      gap: 7px;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .resource-list li {
+      min-width: 0;
+    }
+
+    .resource-row {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      width: 100%;
+      gap: 7px;
+      padding: 7px 8px;
+      background: #f7faff;
+      border: 1px solid #dce7f5;
+      border-radius: 7px;
+    }
+
+    .resource-link {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      color: var(--primary);
+      font-size: 0.82rem;
+      font-weight: 650;
+      text-decoration: none;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .resource-link:hover {
+      text-decoration: underline;
+    }
+
+    .show-link-button {
+      flex: 0 0 auto;
+      padding: 4px 6px;
+      color: #40546f;
+      font-size: 0.7rem;
+      font-weight: 750;
+      white-space: nowrap;
+      background: #fff;
+      border: 1px solid #cbd8e8;
+      border-radius: 5px;
+    }
+
+    .full-link {
+      display: none;
+      width: 100%;
+      margin-top: 5px;
+      padding: 0 2px;
+      overflow-wrap: anywhere;
+      color: #536780;
+      font-size: 0.73rem;
+      line-height: 1.35;
+    }
+
+    .full-link.visible {
+      display: block;
+    }
+
+    .no-resources,
+    .empty-results {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .empty-results {
+      width: 100%;
+      padding: 28px;
+      text-align: center;
+      border: 1px dashed #d2ddea;
+      border-radius: 10px;
+    }
+
+    /* Admin Mode */
+
+    .admin-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 17px;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .timer-setting {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 17px;
+      padding: 13px;
+      background: #f7faff;
+      border: 1px solid #d7e3f3;
+      border-radius: 10px;
+    }
+
+    .timer-setting strong {
+      font-size: 0.88rem;
+    }
+
+    .timer-setting-input {
+      width: 88px;
+      min-height: 38px;
+      padding: 7px 9px;
+      border: 1px solid #cad7e7;
+      border-radius: 7px;
+      outline: none;
+    }
+
+    .timer-setting-note {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .import-panel {
+      display: none;
+      margin: 0 0 16px;
+      padding: 16px;
+      background: #f7faff;
+      border: 1px solid #cfddf1;
+      border-radius: 10px;
+    }
+
+    .import-panel.open {
+      display: block;
+    }
+
+    .import-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .import-controls select {
+      min-height: 40px;
+      padding: 8px 10px;
+      border: 1px solid #cad7e7;
+      border-radius: 8px;
+    }
+
+    .import-note {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.83rem;
+      line-height: 1.5;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid #dbe4f0;
+      border-radius: 11px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 970px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 13px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid #e4ebf4;
+    }
+
+    th {
+      color: #566780;
+      font-size: 0.76rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: #f7f9fc;
+    }
+
+    th button {
+      padding: 0;
+      color: inherit;
+      font: inherit;
+      font-weight: 800;
+      letter-spacing: inherit;
+      text-transform: inherit;
+      background: none;
+      border: 0;
+    }
+
+    th button:hover {
+      color: var(--primary);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .field {
+      width: 100%;
+      min-height: 37px;
+      padding: 8px 9px;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid #d0dbe9;
+      border-radius: 7px;
+      outline: none;
+    }
+
+    .links-editor {
+      display: grid;
+      min-width: 330px;
+      gap: 7px;
+    }
+
+    .link-editor-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .link-editor-row .field {
+      flex: 1;
+    }
+
+    .icon-button {
+      flex: 0 0 auto;
+      width: 37px;
+      height: 37px;
+      color: var(--danger);
+      background: #fff1f1;
+      border: 1px solid #efc0c0;
+      border-radius: 7px;
+    }
+
+    .add-link-button {
+      justify-self: start;
+      padding: 5px 0;
+      color: var(--primary);
+      font-size: 0.82rem;
+      font-weight: 750;
+      background: none;
+      border: 0;
+    }
+
+    .admin-completed {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .admin-completed input {
+      width: 17px;
+      height: 17px;
+    }
+
+    .empty-table {
+      padding: 30px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    footer {
+      margin-top: 26px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-align: center;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 780px) {
+      .app {
+        width: min(100% - 22px, 1440px);
+        padding-top: 16px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .game-top-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 17px;
+      }
+
+      .browser-toolbar {
+        align-items: stretch;
+      }
+
+      .browse-controls,
+      .search-input {
+        width: 100%;
+      }
+
+      .browse-controls {
+        justify-content: stretch;
+      }
+
+      .browse-controls .button {
+        flex: 0 0 auto;
+      }
+
+      .topic-grid {
+        display: flex;
+        overflow-x: auto;
+        padding-bottom: 8px;
+      }
+
+      .topic-grid .topic-card {
+        flex: 0 0 var(--topic-card-width);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <h1>Training Platform</h1>
+        <p>Do not use AI, only read the content in the links and take notes for 15 minutes. Force yourself to explain what you learned out loud for less then 2 minutes.</p>
+      </div>
+
+      <nav class="mode-switcher" aria-label="Application mode">
+        <button id="gameModeButton" class="mode-button active" type="button">Game Mode</button>
+        <button id="adminModeButton" class="mode-button" type="button">Admin Mode</button>
+      </nav>
+    </header>
+
+    <section id="gameView" class="view active">
+      <div class="game-top-grid">
+        <section class="card roulette-card">
+          <div class="roulette-header">
+            <h2>Random Roulette</h2>
+
+            <label class="avoid-completed">
+              <input id="avoidCompleted" type="checkbox" />
+              Avoid completed topics
+            </label>
+          </div>
+
+          <div id="rouletteResult" class="roulette-result">
+            <p class="roulette-placeholder">Have a spin to select a training topic.</p>
+          </div>
+
+          <div class="button-row center">
+            <button id="rouletteButton" class="button" type="button">🎲 Have a spin!</button>
+          </div>
+        </section>
+
+        <aside class="card timer-card">
+          <div id="timerDisplay" class="timer-display">15:00</div>
+          <p id="timerStatus" class="timer-status"></p>
+
+          <div class="button-row center">
+            <button id="startTimerButton" class="button" type="button">Start</button>
+            <button id="pauseTimerButton" class="button secondary" type="button">Pause</button>
+            <button id="resetTimerButton" class="button secondary" type="button">Reset</button>
+          </div>
+        </aside>
+      </div>
+
+      <section class="card">
+        <div class="browser-toolbar">
+          <div>
+            <h2 class="section-heading">Browse Training Topics</h2>
+            <p class="guidance">Use Ctrl + Click (Windows) or ⌘ Cmd + Click (Mac) on a link to open it in a new tab.</p>
+          </div>
+
+          <div class="browse-controls">
+            <label class="visually-hidden" for="gameSearch">Search training topics</label>
+            <input
+              id="gameSearch"
+              class="search-input"
+              type="search"
+              placeholder="Search topics, categories, or links..."
+            />
+            <button id="hideCompletedButton" class="button secondary" type="button">
+              Hide completed topics
+            </button>
+          </div>
+        </div>
+
+        <div id="categoryList" class="category-list"></div>
+        <h3 id="topicBrowserTitle" class="topic-browser-title">All Topics</h3>
+        <div id="gameTopicGrid" class="topic-grid"></div>
+      </section>
+    </section>
+
+    <section id="adminView" class="view">
+      <section class="card">
+        <div class="admin-toolbar">
+          <div>
+            <h2 class="section-heading">Topic Management</h2>
+            <p class="section-description">All changes save automatically in this browser.</p>
+          </div>
+
+          <div class="toolbar-actions">
+            <button id="addTopicButton" class="button" type="button">+ Add Topic</button>
+            <button id="exportButton" class="button secondary" type="button">Export CSV</button>
+            <button id="importToggleButton" class="button secondary" type="button">Import CSV</button>
+            <button id="defaultsButton" class="button secondary" type="button">Download Defaults</button>
+          </div>
+        </div>
+
+        <div class="timer-setting">
+          <strong>Timer length:</strong>
+
+          <label class="visually-hidden" for="timerMinutesInput">Timer length in minutes</label>
+          <input id="timerMinutesInput" class="timer-setting-input" type="number" min="1" max="240" step="1" />
+
+          <span class="timer-setting-note">minutes</span>
+          <button id="saveTimerLengthButton" class="button small secondary" type="button">Update Timer Length</button>
+        </div>
+
+        <div id="importPanel" class="import-panel">
+          <div class="import-controls">
+            <label for="csvFile"><strong>Select CSV:</strong></label>
+            <input id="csvFile" type="file" accept=".csv,text/csv" />
+
+            <label for="importMode"><strong>Import behavior:</strong></label>
+            <select id="importMode">
+              <option value="add">Add to Existing</option>
+              <option value="replace">Replace All</option>
+            </select>
+
+            <button id="processImportButton" class="button small" type="button">Process Import</button>
+          </div>
+
+          <p class="import-note">
+            Expected columns: <strong>Topic, Category, Link, Completed</strong>.
+            Every link uses its own row. Repeat Topic and Category values for multiple links.
+            Completed accepts <strong>Yes</strong> or <strong>No</strong>.
+          </p>
+        </div>
+
+        <div class="admin-toolbar">
+          <label class="visually-hidden" for="adminSearch">Search topics</label>
+          <input
+            id="adminSearch"
+            class="search-input"
+            type="search"
+            placeholder="Search topic, category, or link..."
+          />
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><button id="sortNameButton" type="button">Topic <span id="sortName"></span></button></th>
+                <th><button id="sortCategoryButton" type="button">Category <span id="sortCategory"></span></button></th>
+                <th>Links</th>
+                <th>Completed</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <footer>
+      © 2026 Nathan Boone | Code by AI, layout and content by me (Built on the idea of Matt Ortiz)
+    </footer>
+  </main>
+
+  <div id="statusMessage" class="status-message" role="status" aria-live="polite"></div>
+
+  <script>
+    "use strict";
+
+    const TOPICS_STORAGE_KEY = "training-platform-topics-v5";
+    const SETTINGS_STORAGE_KEY = "training-platform-settings-v1";
+
+    const DEFAULT_TOPICS = [
+  {
+    name: "IPS/IDS",
+    category: "Security",
+    links: [
+      "https://en.wikipedia.org/wiki/Intrusion_detection_system",
+      "https://www.snort.org/",
+      "https://www.snort.org/snort3"
+    ]
+  },
+  {
+    name: "Cisco Talos",
+    category: "Security",
+    links: [
+      "https://en.wikipedia.org/wiki/Cisco_Talos",
+      "https://www.talosintelligence.com/"
+    ]
+  },
+  {
+    name: "CVE - Common Vulnerabilities and Exposures",
+    category: "Security",
+    links: [
+      "https://en.wikipedia.org/wiki/Common_Vulnerabilities_and_Exposures",
+      "https://www.cve.org/About/History",
+      "https://www.cve.org/About/Process"
+    ]
+  },
+  {
+    name: "Talos Year In Review Report",
+    category: "Security",
+    links: [
+      "https://blog.talosintelligence.com/five-defender-priorities-from-the-talos-year-in-review/"
+    ]
+  },
+  {
+    name: "MFA - Multi-factor authentication",
+    category: "Security",
+    links: [
+      "https://en.wikipedia.org/wiki/Multi-factor_authentication",
+      "https://duo.com/learn/what-is-multi-factor-authentication-mfa"
+    ]
+  },
+  {
+    name: "IAM - Identify and Access Management",
+    category: "Security",
+    links: [
+      "https://duo.com/learn/what-is-identity-and-access-management"
+    ]
+  },
+  {
+    name: "IdP - Identify Provider",
+    category: "Security",
+    links: [
+      "https://duo.com/learn/what-is-an-identity-provider"
+    ]
+  },
+  {
+    name: "Data Loss Prevention - DLP",
+    category: "Security",
+    links: [
+      "https://en.wikipedia.org/wiki/Data_loss_prevention_software",
+      "https://www.cisco.com/site/us/en/learn/topics/security/what-is-data-loss-prevention-dlp.html"
+    ]
+  },
+  {
+    name: "Project CodeGuard",
+    category: "AI",
+    links: [
+      "https://blogs.cisco.com/ai/announcing-new-framework-securing-ai-generated-code"
+    ]
+  },
+  {
+    name: "Foundry Security Spec",
+    category: "AI",
+    links: [
+      "https://blogs.cisco.com/ai/announcing-foundry-security-spec",
+      "https://github.com/CiscoDevNet/foundry-security-spec"
+    ]
+  },
+  {
+    name: "Antares SLM",
+    category: "AI",
+    links: [
+      "https://blogs.cisco.com/ai/introducing-antares-the-most-efficient-open-weight-ai-models-for-vulnerability-localization"
+    ]
+  }
+];
+
+    let topics = [];
+    let settings = { timerMinutes: 15 };
+    let selectedCategory = "All";
+    let hideCompletedTopics = false;
+    let rouletteTopicId = null;
+    let rouletteRunning = false;
+    let sortState = { key: null, direction: "asc" };
+    let remainingSeconds = 900;
+    let timerIntervalId = null;
+
+    function createId() {
+      return "topic-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 9);
+    }
+
+    function escapeHTML(value) {
+      return String(value == null ? "" : value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function isSafeUrl(value) {
+      try {
+        const url = new URL(value);
+        return url.protocol === "https:" || url.protocol === "http:";
+      } catch {
+        return false;
+      }
+    }
+
+    function normaliseTopic(topic) {
+      if (!topic || typeof topic !== "object") return null;
+
+      const name = typeof topic.name === "string" ? topic.name : "";
+      const category = typeof topic.category === "string" ? topic.category : "";
+
+      return {
+        id: typeof topic.id === "string" && topic.id ? topic.id : createId(),
+        name: name.trim(),
+        category: category.trim(),
+        links: Array.isArray(topic.links)
+          ? topic.links
+            .filter(link => typeof link === "string")
+            .map(link => link.trim())
+          : [],
+        completed: topic.completed === true
+      };
+    }
+
+    function cloneDefaults() {
+      return DEFAULT_TOPICS.map(topic => ({
+        id: createId(),
+        name: topic.name,
+        category: topic.category,
+        links: topic.links.slice(),
+        completed: false
+      }));
+    }
+
+    function loadSettings() {
+      try {
+        const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_STORAGE_KEY));
+
+        if (
+          savedSettings &&
+          Number.isInteger(savedSettings.timerMinutes) &&
+          savedSettings.timerMinutes >= 1 &&
+          savedSettings.timerMinutes <= 240
+        ) {
+          settings.timerMinutes = savedSettings.timerMinutes;
+        }
+      } catch {
+        settings.timerMinutes = 15;
+      }
+
+      remainingSeconds = settings.timerMinutes * 60;
+    }
+
+    function saveSettings() {
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+    }
+
+    function loadTopics() {
+      try {
+        const savedTopics = localStorage.getItem(TOPICS_STORAGE_KEY);
+
+        if (!savedTopics) {
+          topics = cloneDefaults();
+          saveTopics();
+          return;
+        }
+
+        const parsedTopics = JSON.parse(savedTopics);
+
+        if (!Array.isArray(parsedTopics)) {
+          throw new Error("Invalid saved data.");
+        }
+
+        topics = parsedTopics.map(normaliseTopic).filter(Boolean);
+      } catch {
+        topics = cloneDefaults();
+      }
+    }
+
+    function saveTopics() {
+      try {
+        localStorage.setItem(TOPICS_STORAGE_KEY, JSON.stringify(topics));
+      } catch {
+        showStatus("Unable to save changes to browser storage.", "error");
+      }
+    }
+
+    function getTopic(id) {
+      return topics.find(topic => topic.id === id) || null;
+    }
+
+    function showMode(mode) {
+      const isGameMode = mode === "game";
+
+      document.getElementById("gameView").classList.toggle("active", isGameMode);
+      document.getElementById("adminView").classList.toggle("active", !isGameMode);
+      document.getElementById("gameModeButton").classList.toggle("active", isGameMode);
+      document.getElementById("adminModeButton").classList.toggle("active", !isGameMode);
+
+      if (isGameMode) {
+        renderGameTopics();
+      } else {
+        renderAdminTable();
+      }
+    }
+
+    function getCategories() {
+      return [...new Set(
+        topics
+          .filter(topic => topic.name.trim() && topic.category.trim())
+          .map(topic => topic.category)
+      )].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    }
+
+    function createResourceList(links, uniquePrefix) {
+      const validLinks = links.filter(isSafeUrl);
+
+      if (!validLinks.length) {
+        return '<p class="no-resources">No learning links have been added.</p>';
+      }
+
+      return `
+        <ul class="resource-list">
+          ${validLinks.map((link, index) => {
+            const fullLinkId = `${uniquePrefix}-link-${index}`;
+
+            return `
+              <li>
+                <div class="resource-row">
+                  <a
+                    class="resource-link"
+                    href="${escapeHTML(link)}"
+                    title="${escapeHTML(link)}"
+                  >${escapeHTML(link)}</a>
+
+                  <button
+                    class="show-link-button"
+                    type="button"
+                    data-full-link="${fullLinkId}"
+                  >Show full link</button>
+                </div>
+
+                <div id="${fullLinkId}" class="full-link">${escapeHTML(link)}</div>
+              </li>
+            `;
+          }).join("")}
+        </ul>
+      `;
+    }
+
+    function createTopicCard(topic, context) {
+      return `
+        <article class="topic-card">
+          <div class="topic-card-header">
+            <div>
+              <h4>${escapeHTML(topic.name)}</h4>
+              <p class="topic-category">${escapeHTML(topic.category || "Uncategorised")}</p>
+            </div>
+
+            <label class="completion-control">
+              <input
+                type="checkbox"
+                data-completed-id="${topic.id}"
+                ${topic.completed ? "checked" : ""}
+              />
+              Completed
+            </label>
+          </div>
+
+          ${createResourceList(topic.links, `${context}-${topic.id}`)}
+        </article>
+      `;
+    }
+
+    function renderGameTopics() {
+      const categoryList = document.getElementById("categoryList");
+      const topicGrid = document.getElementById("gameTopicGrid");
+      const searchValue = document.getElementById("gameSearch").value.trim().toLowerCase();
+      const categories = getCategories();
+
+      if (selectedCategory !== "All" && !categories.includes(selectedCategory)) {
+        selectedCategory = "All";
+      }
+
+      categoryList.innerHTML = "";
+
+      ["All", ...categories].forEach(category => {
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "category-button" + (category === selectedCategory ? " active" : "");
+        button.textContent = category === "All" ? "All Categories" : category;
+
+        button.addEventListener("click", function () {
+          selectedCategory = category;
+          renderGameTopics();
+        });
+
+        categoryList.appendChild(button);
+      });
+
+      const results = topics.filter(topic => {
+        if (!topic.name.trim()) return false;
+
+        const topicCategory = topic.category || "Uncategorised";
+        const categoryMatch = selectedCategory === "All" || topicCategory === selectedCategory;
+        const searchableText = [topic.name, topicCategory, ...topic.links].join(" ").toLowerCase();
+        const searchMatch = searchableText.includes(searchValue);
+        const completionMatch = !hideCompletedTopics || !topic.completed;
+
+        return categoryMatch && searchMatch && completionMatch;
+      });
+
+      document.getElementById("topicBrowserTitle").textContent =
+        (selectedCategory === "All" ? "All Topics" : selectedCategory + " Topics") +
+        (searchValue ? " — Search Results" : "");
+
+      if (!results.length) {
+        topicGrid.innerHTML = '<p class="empty-results">No matching topics found. Try another category or search term.</p>';
+        return;
+      }
+
+      topicGrid.innerHTML = results.map(topic => createTopicCard(topic, "browse")).join("");
+    }
+
+    function renderRouletteTopic() {
+      const rouletteResult = document.getElementById("rouletteResult");
+      const topic = getTopic(rouletteTopicId);
+
+      if (!topic || !topic.name.trim()) {
+        rouletteResult.innerHTML = '<p class="roulette-placeholder">Have a spin to select a training topic.</p>';
+        return;
+      }
+
+      rouletteResult.innerHTML = `
+        <div class="roulette-final-reveal">
+          ${createTopicCard(topic, "roulette")}
+        </div>
+      `;
+    }
+
+    function renderRouletteTicker(topic) {
+      const rouletteResult = document.getElementById("rouletteResult");
+
+      rouletteResult.innerHTML = `
+        <div class="roulette-ticker">
+          <div>
+            <p class="roulette-ticker-name">${escapeHTML(topic.name)}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function spinRoulette() {
+      if (rouletteRunning) return;
+
+      const validTopics = topics.filter(topic => topic.name.trim());
+      const avoidCompleted = document.getElementById("avoidCompleted").checked;
+      const eligibleTopics = avoidCompleted
+        ? validTopics.filter(topic => !topic.completed)
+        : validTopics.slice();
+
+      if (!validTopics.length) {
+        showStatus("Add at least one named topic before spinning the roulette.", "error");
+        return;
+      }
+
+      if (!eligibleTopics.length) {
+        showStatus("All topics are completed. Disable Avoid completed topics or mark a topic as incomplete.", "error");
+        return;
+      }
+
+      rouletteRunning = true;
+
+      const button = document.getElementById("rouletteButton");
+      button.disabled = true;
+
+      /*
+        The ticker always cycles through all topics.
+        The final selection respects Avoid completed topics when enabled.
+      */
+      const finalTopic = eligibleTopics[Math.floor(Math.random() * eligibleTopics.length)];
+      let tickerIndex = Math.floor(Math.random() * validTopics.length);
+      let tickCount = 0;
+      const totalTicks = Math.max(22, validTopics.length * 5);
+
+      function runTick() {
+        const tickerTopic = validTopics[tickerIndex % validTopics.length];
+        renderRouletteTicker(tickerTopic);
+
+        tickerIndex++;
+        tickCount++;
+
+        if (tickCount >= totalTicks) {
+          rouletteTopicId = finalTopic.id;
+          rouletteRunning = false;
+          button.disabled = false;
+          renderRouletteTopic();
+          return;
+        }
+
+        const progress = tickCount / totalTicks;
+        const delay = Math.round(65 + (progress * progress * 420));
+
+        window.setTimeout(runTick, delay);
+      }
+
+      runTick();
+    }
+
+    function openBackgroundLink(event) {
+      const link = event.target.closest("a.resource-link");
+
+      if (!link) return;
+
+      /*
+        Preserve standard browser Ctrl/Cmd-click behavior.
+      */
+      if (event.ctrlKey || event.metaKey || event.shiftKey || event.button === 1) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const newTab = window.open(link.href, "_blank", "noopener,noreferrer");
+
+      /*
+        The browser ultimately controls whether tabs open in the background.
+        This requests that focus remains on the training platform.
+      */
+      if (newTab) {
+        window.focus();
+      } else {
+        showStatus("Your browser blocked the new tab. Allow pop-ups for this local file if needed.", "error");
+      }
+    }
+
+    function toggleFullLink(button) {
+      const fullLink = document.getElementById(button.dataset.fullLink);
+
+      if (!fullLink) return;
+
+      const isVisible = fullLink.classList.toggle("visible");
+      button.textContent = isVisible ? "Hide full link" : "Show full link";
+    }
+
+    function setCompleted(topicId, completed) {
+      const topic = getTopic(topicId);
+
+      if (!topic) return;
+
+      topic.completed = completed;
+      saveTopics();
+
+      renderGameTopics();
+      renderRouletteTopic();
+      renderAdminTable();
+    }
+
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const secondsRemaining = seconds % 60;
+
+      return String(minutes).padStart(2, "0") + ":" +
+        String(secondsRemaining).padStart(2, "0");
+    }
+
+    function renderTimer() {
+      document.getElementById("timerDisplay").textContent = formatTime(remainingSeconds);
+    }
+
+    function startTimer() {
+      if (timerIntervalId !== null) return;
+
+      if (remainingSeconds <= 0) {
+        remainingSeconds = settings.timerMinutes * 60;
+      }
+
+      document.getElementById("timerStatus").textContent = "";
+
+      timerIntervalId = window.setInterval(function () {
+        remainingSeconds--;
+        renderTimer();
+
+        if (remainingSeconds <= 0) {
+          pauseTimer();
+          remainingSeconds = 0;
+          renderTimer();
+          document.getElementById("timerStatus").textContent = "Session complete.";
+          window.alert("Your study session is complete.");
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      if (timerIntervalId !== null) {
+        window.clearInterval(timerIntervalId);
+        timerIntervalId = null;
+      }
+
+      if (remainingSeconds > 0 && remainingSeconds < settings.timerMinutes * 60) {
+        document.getElementById("timerStatus").textContent = "Timer paused";
+      }
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      remainingSeconds = settings.timerMinutes * 60;
+      renderTimer();
+      document.getElementById("timerStatus").textContent = "";
+    }
+
+    function saveTimerLength() {
+      const input = document.getElementById("timerMinutesInput");
+      const minutes = Number(input.value);
+
+      if (!Number.isInteger(minutes) || minutes < 1 || minutes > 240) {
+        showStatus("Enter a timer length between 1 and 240 minutes.", "error");
+        return;
+      }
+
+      settings.timerMinutes = minutes;
+      saveSettings();
+      resetTimer();
+      showStatus("Timer length saved.", "success");
+    }
+
+    function getAdminTopics() {
+      const searchValue = document.getElementById("adminSearch").value.trim().toLowerCase();
+
+      const filteredTopics = topics.filter(topic =>
+        [topic.name, topic.category, ...topic.links].join(" ").toLowerCase().includes(searchValue)
+      );
+
+      if (!sortState.key) {
+        return filteredTopics;
+      }
+
+      return filteredTopics.sort((a, b) => {
+        const result = String(a[sortState.key]).localeCompare(
+          String(b[sortState.key]),
+          undefined,
+          { numeric: true }
+        );
+
+        return sortState.direction === "asc" ? result : -result;
+      });
+    }
+
+    function renderAdminTable() {
+      const tableBody = document.getElementById("adminTableBody");
+      const visibleTopics = getAdminTopics();
+
+      document.getElementById("sortName").textContent =
+        sortState.key === "name" ? (sortState.direction === "asc" ? " ▲" : " ▼") : "";
+
+      document.getElementById("sortCategory").textContent =
+        sortState.key === "category" ? (sortState.direction === "asc" ? " ▲" : " ▼") : "";
+
+      if (!visibleTopics.length) {
+        tableBody.innerHTML = '<tr><td class="empty-table" colspan="5">No matching topics found.</td></tr>';
+        return;
+      }
+
+      tableBody.innerHTML = visibleTopics.map(topic => {
+        const editableLinks = topic.links.length ? topic.links : [""];
+
+        return `
+          <tr>
+            <td>
+              <input
+                class="field"
+                type="text"
+                value="${escapeHTML(topic.name)}"
+                placeholder="Topic name"
+                data-field-id="${topic.id}"
+                data-field-name="name"
+              />
+            </td>
+
+            <td>
+              <input
+                class="field"
+                type="text"
+                value="${escapeHTML(topic.category)}"
+                placeholder="Category"
+                data-field-id="${topic.id}"
+                data-field-name="category"
+              />
+            </td>
+
+            <td>
+              <div class="links-editor">
+                ${editableLinks.map((link, index) => `
+                  <div class="link-editor-row">
+                    <input
+                      class="field"
+                      type="url"
+                      value="${escapeHTML(link)}"
+                      placeholder="https://example.com/resource"
+                      data-link-id="${topic.id}"
+                      data-link-index="${index}"
+                    />
+
+                    <button
+                      class="icon-button"
+                      type="button"
+                      title="Remove link"
+                      aria-label="Remove link"
+                      data-remove-link-id="${topic.id}"
+                      data-remove-link-index="${index}"
+                    >×</button>
+                  </div>
+                `).join("")}
+
+                <button class="add-link-button" type="button" data-add-link-id="${topic.id}">
+                  + Add link
+                </button>
+              </div>
+            </td>
+
+            <td>
+              <label class="admin-completed">
+                <input
+                  type="checkbox"
+                  data-completed-id="${topic.id}"
+                  ${topic.completed ? "checked" : ""}
+                />
+                Completed
+              </label>
+            </td>
+
+            <td>
+              <button class="button danger small" type="button" data-delete-id="${topic.id}">
+                Delete
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function setSort(key) {
+      if (sortState.key === key) {
+        sortState.direction = sortState.direction === "asc" ? "desc" : "asc";
+      } else {
+        sortState.key = key;
+        sortState.direction = "asc";
+      }
+
+      renderAdminTable();
+    }
+
+    function addTopic() {
+      topics.unshift({
+        id: createId(),
+        name: "",
+        category: "",
+        links: [""],
+        completed: false
+      });
+
+      sortState.key = null;
+      document.getElementById("adminSearch").value = "";
+
+      saveTopics();
+      renderAdminTable();
+      renderGameTopics();
+
+      const firstTopicNameField = document.querySelector(
+        '#adminTableBody input[data-field-name="name"]'
+      );
+
+      if (firstTopicNameField) {
+        firstTopicNameField.focus();
+      }
+
+      showStatus("New blank topic added at the top of the list.", "success");
+    }
+
+    function updateTopicField(id, field, value) {
+      const topic = getTopic(id);
+      const cleanedValue = String(value || "").trim();
+
+      if (!topic) return;
+
+      /*
+        Blank fields are allowed while creating a new topic.
+        A completely blank topic is hidden from Game Mode until named.
+      */
+      topic[field] = cleanedValue;
+
+      saveTopics();
+      renderGameTopics();
+      renderRouletteTopic();
+    }
+
+    function addLink(id) {
+      const topic = getTopic(id);
+
+      if (!topic) return;
+
+      topic.links.push("");
+      saveTopics();
+      renderAdminTable();
+
+      const linkInputs = document.querySelectorAll(`[data-link-id="${id}"]`);
+
+      if (linkInputs.length) {
+        linkInputs[linkInputs.length - 1].focus();
+      }
+    }
+
+    function updateLink(id, index, value) {
+      const topic = getTopic(id);
+      const cleanedValue = String(value || "").trim();
+
+      if (!topic) return;
+
+      if (cleanedValue && !isSafeUrl(cleanedValue)) {
+        showStatus("Links must use a valid http:// or https:// URL.", "error");
+        renderAdminTable();
+        return;
+      }
+
+      if (index >= topic.links.length) {
+        topic.links.push(cleanedValue);
+      } else {
+        topic.links[index] = cleanedValue;
+      }
+
+      saveTopics();
+      renderGameTopics();
+      renderRouletteTopic();
+    }
+
+    function removeLink(id, index) {
+      const topic = getTopic(id);
+
+      if (!topic) return;
+
+      topic.links.splice(index, 1);
+
+      /*
+        Always preserve one available Link field in Admin Mode.
+      */
+      if (!topic.links.length) {
+        topic.links.push("");
+      }
+
+      saveTopics();
+      renderAdminTable();
+      renderGameTopics();
+      renderRouletteTopic();
+    }
+
+    function deleteTopic(id) {
+      const topic = getTopic(id);
+
+      if (!topic) return;
+
+      const topicName = topic.name || "this blank topic";
+
+      if (!window.confirm(`Delete "${topicName}"? This cannot be undone.`)) {
+        return;
+      }
+
+      topics = topics.filter(item => item.id !== id);
+
+      if (rouletteTopicId === id) {
+        rouletteTopicId = null;
+      }
+
+      saveTopics();
+      renderAdminTable();
+      renderGameTopics();
+      renderRouletteTopic();
+      showStatus("Topic deleted.", "success");
+    }
+
+    function csvEscape(value) {
+      return '"' + String(value == null ? "" : value).replace(/"/g, '""') + '"';
+    }
+
+    function buildCSV(sourceTopics) {
+      const rows = [["Topic", "Category", "Link", "Completed"]];
+
+      sourceTopics
+        .filter(topic => topic.name.trim())
+        .forEach(topic => {
+          const completed = topic.completed ? "Yes" : "No";
+          const exportableLinks = topic.links.filter(link => link.trim());
+
+          if (!exportableLinks.length) {
+            rows.push([topic.name, topic.category, "", completed]);
+            return;
+          }
+
+          exportableLinks.forEach(link => {
+            rows.push([topic.name, topic.category, link, completed]);
+          });
+        });
+
+      return rows.map(row => row.map(csvEscape).join(",")).join("\r\n");
+    }
+
+    function downloadCSV(content, filename) {
+      const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+
+      downloadLink.href = url;
+      downloadLink.download = filename;
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+
+      window.setTimeout(() => URL.revokeObjectURL(url), 100);
+    }
+
+    function exportCSV() {
+      try {
+        downloadCSV(buildCSV(topics), "training-topics.csv");
+        showStatus("CSV export downloaded.", "success");
+      } catch {
+        showStatus("CSV export failed.", "error");
+      }
+    }
+
+    function downloadDefaults() {
+      const defaults = DEFAULT_TOPICS.map(topic => ({
+        ...topic,
+        completed: false
+      }));
+
+      downloadCSV(buildCSV(defaults), "training-platform-defaults.csv");
+      showStatus("Default training materials CSV downloaded.", "success");
+    }
+
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let field = "";
+      let quoted = false;
+
+      for (let index = 0; index < text.length; index++) {
+        const character = text[index];
+        const nextCharacter = text[index + 1];
+
+        if (character === '"') {
+          if (quoted && nextCharacter === '"') {
+            field += '"';
+            index++;
+          } else {
+            quoted = !quoted;
+          }
+        } else if (character === "," && !quoted) {
+          row.push(field);
+          field = "";
+        } else if ((character === "\n" || character === "\r") && !quoted) {
+          if (character === "\r" && nextCharacter === "\n") {
+            index++;
+          }
+
+          row.push(field);
+
+          if (row.some(cell => cell.trim() !== "")) {
+            rows.push(row);
+          }
+
+          row = [];
+          field = "";
+        } else {
+          field += character;
+        }
+      }
+
+      if (quoted) {
+        throw new Error("CSV contains an unclosed quoted field.");
+      }
+
+      row.push(field);
+
+      if (row.some(cell => cell.trim() !== "")) {
+        rows.push(row);
+      }
+
+      return rows;
+    }
+
+    function processImport() {
+      const file = document.getElementById("csvFile").files[0];
+      const mode = document.getElementById("importMode").value;
+
+      if (!file) {
+        showStatus("Select a CSV file before importing.", "error");
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        showStatus("The CSV file is too large. The limit is 5 MB.", "error");
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.onerror = function () {
+        showStatus("The selected file could not be read.", "error");
+      };
+
+      reader.onload = function (event) {
+        try {
+          const csvText = String(event.target.result || "").replace(/^\uFEFF/, "");
+          const rows = parseCSV(csvText);
+
+          if (!rows.length) {
+            throw new Error("The CSV file is empty.");
+          }
+
+          const firstCell = String(rows[0][0] || "").trim().toLowerCase();
+          const dataRows = firstCell === "topic" ? rows.slice(1) : rows;
+          const groupedTopics = new Map();
+          const rejectedRows = [];
+
+          dataRows.forEach((row, index) => {
+            const name = String(row[0] || "").trim();
+            const category = String(row[1] || "").trim();
+            const link = String(row[2] || "").trim();
+            const completedValue = String(row[3] || "").trim().toLowerCase();
+
+            if (!name || (link && !isSafeUrl(link))) {
+              rejectedRows.push(index + 1);
+              return;
+            }
+
+            const completed = completedValue === "yes" || completedValue === "true";
+            const key = name.toLowerCase() + "||" + category.toLowerCase();
+
+            if (!groupedTopics.has(key)) {
+              groupedTopics.set(key, {
+                id: createId(),
+                name: name,
+                category: category,
+                links: [],
+                completed: completed
+              });
+            }
+
+            const importedTopic = groupedTopics.get(key);
+
+            if (completed) {
+              importedTopic.completed = true;
+            }
+
+            if (link && !importedTopic.links.includes(link)) {
+              importedTopic.links.push(link);
+            }
+          });
+
+          const importedTopics = [...groupedTopics.values()];
+
+          if (!importedTopics.length) {
+            throw new Error("No valid topic rows were found.");
+          }
+
+          if (mode === "replace") {
+            const confirmed = window.confirm(
+              `Replace all current topics with ${importedTopics.length} imported topic(s)?`
+            );
+
+            if (!confirmed) return;
+
+            topics = importedTopics;
+            rouletteTopicId = null;
+            selectedCategory = "All";
+          } else {
+            topics = topics.concat(importedTopics);
+          }
+
+          saveTopics();
+
+          document.getElementById("csvFile").value = "";
+          document.getElementById("adminSearch").value = "";
+          sortState.key = null;
+
+          renderAdminTable();
+          renderGameTopics();
+          renderRouletteTopic();
+
+          let message = `${importedTopics.length} topic(s) imported successfully.`;
+
+          if (rejectedRows.length) {
+            message += ` Invalid row(s) skipped: ${rejectedRows.join(", ")}.`;
+          }
+
+          showStatus(message, rejectedRows.length ? "error" : "success");
+        } catch (error) {
+          showStatus("Import failed: " + error.message, "error");
+        }
+      };
+
+      reader.readAsText(file);
+    }
+
+    function showStatus(message, type) {
+      const status = document.getElementById("statusMessage");
+
+      status.textContent = message;
+      status.className = "status-message visible " + (type === "error" ? "error" : "success");
+
+      window.clearTimeout(showStatus.timeoutId);
+
+      showStatus.timeoutId = window.setTimeout(function () {
+        status.classList.remove("visible");
+      }, 6500);
+    }
+
+    document.getElementById("gameModeButton").addEventListener("click", () => showMode("game"));
+    document.getElementById("adminModeButton").addEventListener("click", () => showMode("admin"));
+
+    document.getElementById("rouletteButton").addEventListener("click", spinRoulette);
+
+    document.getElementById("startTimerButton").addEventListener("click", startTimer);
+    document.getElementById("pauseTimerButton").addEventListener("click", pauseTimer);
+    document.getElementById("resetTimerButton").addEventListener("click", resetTimer);
+
+    document.getElementById("saveTimerLengthButton").addEventListener("click", saveTimerLength);
+
+    document.getElementById("gameSearch").addEventListener("input", renderGameTopics);
+    document.getElementById("adminSearch").addEventListener("input", renderAdminTable);
+
+    document.getElementById("hideCompletedButton").addEventListener("click", function () {
+      hideCompletedTopics = !hideCompletedTopics;
+
+      this.textContent = hideCompletedTopics
+        ? "Show completed topics"
+        : "Hide completed topics";
+
+      renderGameTopics();
+    });
+
+    document.getElementById("addTopicButton").addEventListener("click", addTopic);
+    document.getElementById("exportButton").addEventListener("click", exportCSV);
+    document.getElementById("defaultsButton").addEventListener("click", downloadDefaults);
+
+    document.getElementById("importToggleButton").addEventListener("click", function () {
+      document.getElementById("importPanel").classList.toggle("open");
+    });
+
+    document.getElementById("processImportButton").addEventListener("click", processImport);
+
+    document.getElementById("sortNameButton").addEventListener("click", () => setSort("name"));
+    document.getElementById("sortCategoryButton").addEventListener("click", () => setSort("category"));
+
+    document.addEventListener("click", function (event) {
+      const resourceLink = event.target.closest("a.resource-link");
+
+      if (resourceLink) {
+        openBackgroundLink(event);
+        return;
+      }
+
+      const showFullLinkButton = event.target.closest(".show-link-button");
+
+      if (showFullLinkButton) {
+        toggleFullLink(showFullLinkButton);
+        return;
+      }
+
+      const addLinkButton = event.target.closest("[data-add-link-id]");
+
+      if (addLinkButton) {
+        addLink(addLinkButton.dataset.addLinkId);
+        return;
+      }
+
+      const removeLinkButton = event.target.closest("[data-remove-link-id]");
+
+      if (removeLinkButton) {
+        removeLink(
+          removeLinkButton.dataset.removeLinkId,
+          Number(removeLinkButton.dataset.removeLinkIndex)
+        );
+        return;
+      }
+
+      const deleteButton = event.target.closest("[data-delete-id]");
+
+      if (deleteButton) {
+        deleteTopic(deleteButton.dataset.deleteId);
+      }
+    });
+
+    document.addEventListener("change", function (event) {
+      const completedBox = event.target.closest("[data-completed-id]");
+
+      if (completedBox) {
+        setCompleted(completedBox.dataset.completedId, completedBox.checked);
+        return;
+      }
+
+      const field = event.target.closest("[data-field-id]");
+
+      if (field) {
+        updateTopicField(field.dataset.fieldId, field.dataset.fieldName, field.value);
+        return;
+      }
+
+      const linkField = event.target.closest("[data-link-id]");
+
+      if (linkField) {
+        updateLink(linkField.dataset.linkId, Number(linkField.dataset.linkIndex), linkField.value);
+      }
+    });
+
+    loadSettings();
+    loadTopics();
+
+    document.getElementById("timerMinutesInput").value = settings.timerMinutes;
+
+    renderTimer();
+    renderGameTopics();
+    renderAdminTable();
+    renderRouletteTopic();
+  </script>
+</body>
+</html>
