@@ -1515,7 +1515,9 @@
     }
 
     function renderTimer() {
-      document.getElementById("timerDisplay").textContent = formatTime(remainingSeconds);
+      const formattedTime = formatTime(remainingSeconds);
+      document.getElementById("timerDisplay").textContent = formattedTime;
+      document.title = formattedTime;
     }
 
     function renderTimerMode() {
