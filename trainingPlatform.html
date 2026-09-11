@@ -490,6 +490,13 @@
       font-weight: 650;
     }
 
+    .topic-description {
+      margin: 0 0 12px;
+      color: #42536d;
+      font-size: 0.83rem;
+      line-height: 1.45;
+    }
+
     .completion-control {
       display: inline-flex;
       flex: 0 0 auto;
@@ -721,6 +728,12 @@
       border: 1px solid #d0dbe9;
       border-radius: 7px;
       outline: none;
+    }
+
+    .description-field {
+      min-width: 240px;
+      resize: vertical;
+      line-height: 1.45;
     }
 
     .links-editor {
@@ -971,8 +984,8 @@
           </div>
 
           <p class="import-note">
-            Expected columns: <strong>Topic, Category, Link, Completed</strong>.
-            Every link uses its own row. Repeat Topic and Category values for multiple links.
+            Expected columns: <strong>Topic, Category, Description, Link, Completed</strong>.
+            Description is optional. Every link uses its own row; repeat topic details for multiple links.
             Completed accepts <strong>Yes</strong> or <strong>No</strong>.
           </p>
         </div>
@@ -993,6 +1006,7 @@
               <tr>
                 <th><button id="sortNameButton" type="button">Topic <span id="sortName"></span></button></th>
                 <th><button id="sortCategoryButton" type="button">Category <span id="sortCategory"></span></button></th>
+                <th>Description <span class="visually-hidden">(optional)</span></th>
                 <th>Links</th>
                 <th>Completed</th>
                 <th>Actions</th>
@@ -1145,11 +1159,13 @@
 
       const name = typeof topic.name === "string" ? topic.name : "";
       const category = typeof topic.category === "string" ? topic.category : "";
+      const description = typeof topic.description === "string" ? topic.description : "";
 
       return {
         id: typeof topic.id === "string" && topic.id ? topic.id : createId(),
         name: name.trim(),
         category: category.trim(),
+        description: description.trim(),
         links: Array.isArray(topic.links)
           ? topic.links
             .filter(link => typeof link === "string")
@@ -1170,6 +1186,7 @@
         id: createId(),
         name: topic.name,
         category: topic.category,
+        description: topic.description || "",
         links: topic.links.slice(),
         completed: false
       }));
@@ -1325,6 +1342,7 @@
             </label>
           </div>
 
+          ${topic.description ? `<p class="topic-description">${escapeHTML(topic.description)}</p>` : ""}
           ${createResourceList(topic.links, `${context}-${topic.id}`)}
         </article>
       `;
@@ -1362,7 +1380,7 @@
 
         const topicCategory = topic.category || "Uncategorised";
         const categoryMatch = selectedCategory === "All" || topicCategory === selectedCategory;
-        const searchableText = [topic.name, topicCategory, ...topic.links].join(" ").toLowerCase();
+        const searchableText = [topic.name, topicCategory, topic.description, ...topic.links].join(" ").toLowerCase();
         const searchMatch = searchableText.includes(searchValue);
         const completionMatch = !hideCompletedTopics || !topic.completed;
 
@@ -1655,7 +1673,7 @@
       const searchValue = document.getElementById("adminSearch").value.trim().toLowerCase();
 
       const filteredTopics = topics.filter(topic =>
-        [topic.name, topic.category, ...topic.links].join(" ").toLowerCase().includes(searchValue)
+        [topic.name, topic.category, topic.description, ...topic.links].join(" ").toLowerCase().includes(searchValue)
       );
 
       if (!sortState.key) {
@@ -1684,7 +1702,7 @@
         sortState.key === "category" ? (sortState.direction === "asc" ? " ▲" : " ▼") : "";
 
       if (!visibleTopics.length) {
-        tableBody.innerHTML = '<tr><td class="empty-table" colspan="5">No matching topics found.</td></tr>';
+        tableBody.innerHTML = '<tr><td class="empty-table" colspan="6">No matching topics found.</td></tr>';
         return;
       }
 
@@ -1702,6 +1720,16 @@
                 data-field-id="${topic.id}"
                 data-field-name="name"
               />
+            </td>
+
+            <td>
+              <textarea
+                class="field description-field"
+                rows="${Math.max(1, topic.links.length)}"
+                placeholder="Optional description"
+                data-field-id="${topic.id}"
+                data-field-name="description"
+              >${escapeHTML(topic.description)}</textarea>
             </td>
 
             <td>
@@ -1782,6 +1810,7 @@
         id: createId(),
         name: "",
         category: "",
+        description: "",
         links: [""],
         completed: false
       });
@@ -1909,21 +1938,22 @@
     }
 
     function buildCSV(sourceTopics) {
-      const rows = [["Topic", "Category", "Link", "Completed"]];
+      const rows = [["Topic", "Category", "Description", "Link", "Completed"]];
 
       sourceTopics
         .filter(topic => topic.name.trim())
         .forEach(topic => {
           const completed = topic.completed ? "Yes" : "No";
+          const description = topic.description || "";
           const exportableLinks = topic.links.filter(link => link.trim());
 
           if (!exportableLinks.length) {
-            rows.push([topic.name, topic.category, "", completed]);
+            rows.push([topic.name, topic.category, description, "", completed]);
             return;
           }
 
           exportableLinks.forEach(link => {
-            rows.push([topic.name, topic.category, link, completed]);
+            rows.push([topic.name, topic.category, description, link, completed]);
           });
         });
 
@@ -2072,16 +2102,22 @@
             throw new Error("The CSV file is empty.");
           }
 
-          const firstCell = String(rows[0][0] || "").trim().toLowerCase();
-          const dataRows = firstCell === "topic" ? rows.slice(1) : rows;
+          const header = rows[0].map(cell => String(cell || "").trim().toLowerCase());
+          const hasHeader = header.includes("topic");
+          const columnIndexes = hasHeader
+            ? Object.fromEntries(header.map((name, index) => [name, index]))
+            : { topic: 0, category: 1, link: 2, completed: 3 };
+          const dataRows = hasHeader ? rows.slice(1) : rows;
           const groupedTopics = new Map();
           const rejectedRows = [];
 
           dataRows.forEach((row, index) => {
-            const name = String(row[0] || "").trim();
-            const category = String(row[1] || "").trim();
-            const link = String(row[2] || "").trim();
-            const completedValue = String(row[3] || "").trim().toLowerCase();
+            const valueAt = name => String(row[columnIndexes[name]] || "").trim();
+            const name = valueAt("topic");
+            const category = valueAt("category");
+            const description = valueAt("description");
+            const link = valueAt("link");
+            const completedValue = valueAt("completed").toLowerCase();
 
             if (!name || (link && !isSafeUrl(link))) {
               rejectedRows.push(index + 1);
@@ -2096,6 +2132,7 @@
                 id: createId(),
                 name: name,
                 category: category,
+                description: description,
                 links: [],
                 completed: completed
               });
@@ -2105,6 +2142,10 @@
 
             if (completed) {
               importedTopic.completed = true;
+            }
+
+            if (!importedTopic.description && description) {
+              importedTopic.description = description;
             }
 
             if (link && !importedTopic.links.includes(link)) {
