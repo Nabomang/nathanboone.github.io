@@ -1457,31 +1457,45 @@
       */
       const finalTopic = eligibleTopics[Math.floor(Math.random() * eligibleTopics.length)];
       let tickerIndex = Math.floor(Math.random() * validTopics.length);
-      let tickCount = 0;
-      const totalTicks = Math.max(22, validTopics.length * 5);
+      const durationMs = 1800;
+      const startedAt = performance.now();
+
+      function finishRoulette() {
+        if (!rouletteRunning) return;
+
+        rouletteTopicId = finalTopic.id;
+        rouletteRunning = false;
+        button.disabled = false;
+        renderRouletteTopic();
+      }
 
       function runTick() {
+        if (!rouletteRunning) return;
+
+        const elapsedMs = performance.now() - startedAt;
+
+        if (elapsedMs >= durationMs) {
+          finishRoulette();
+          return;
+        }
+
         const tickerTopic = validTopics[tickerIndex % validTopics.length];
         renderRouletteTicker(tickerTopic);
 
         tickerIndex++;
-        tickCount++;
 
-        if (tickCount >= totalTicks) {
-          rouletteTopicId = finalTopic.id;
-          rouletteRunning = false;
-          button.disabled = false;
-          renderRouletteTopic();
-          return;
-        }
-
-        const progress = tickCount / totalTicks;
-        const delay = Math.round(65 + (progress * progress * 420));
+        const progress = elapsedMs / durationMs;
+        const delay = Math.min(
+          durationMs - elapsedMs,
+          Math.round(55 + (progress * progress * 145))
+        );
 
         window.setTimeout(runTick, delay);
       }
 
       runTick();
+      // A failsafe keeps the animation below the requested two-second maximum.
+      window.setTimeout(finishRoulette, 2000);
     }
 
     function openBackgroundLink(event) {
