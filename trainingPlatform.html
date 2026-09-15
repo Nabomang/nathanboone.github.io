@@ -948,7 +948,7 @@
             <button id="exportButton" class="button secondary" type="button">Export CSV</button>
             <button id="importToggleButton" class="button secondary" type="button">Import CSV</button>
             <button id="defaultsButton" class="button secondary" type="button">Download Defaults</button>
-            <button id="refreshDefaultsButton" class="button secondary" type="button">Refresh Defaults</button>
+            <button id="refreshDefaultsButton" class="button secondary" type="button">Sync Defaults</button>
           </div>
         </div>
 
@@ -1254,6 +1254,7 @@
 
       return {
         id: typeof topic.id === "string" && topic.id ? topic.id : createId(),
+        defaultKey: typeof topic.defaultKey === "string" ? topic.defaultKey : "",
         name: name.trim(),
         category: category.trim(),
         description: description.trim(),
@@ -1272,9 +1273,67 @@
         .join("\u0000");
     }
 
+    function getDefaultTopicKey(topic) {
+      if (typeof topic.key === "string" && topic.key.trim()) {
+        return topic.key.trim();
+      }
+
+      const firstLink = Array.isArray(topic.links)
+        ? topic.links.find(link => typeof link === "string" && link.trim())
+        : "";
+
+      return firstLink
+        ? "link:" + firstLink.trim().toLowerCase()
+        : "topic:" + getTopicCompletionKey(topic);
+    }
+
+    function topicsShareLink(firstTopic, secondTopic) {
+      const firstLinks = new Set(
+        (firstTopic.links || []).map(link => String(link).trim().toLowerCase()).filter(Boolean)
+      );
+
+      return (secondTopic.links || []).some(link =>
+        firstLinks.has(String(link).trim().toLowerCase())
+      );
+    }
+
+    function syncTopicsWithDefaults(savedTopics) {
+      const remainingTopics = savedTopics.slice();
+      const syncedDefaults = DEFAULT_TOPICS.map(defaultTopic => {
+        const defaultKey = getDefaultTopicKey(defaultTopic);
+        const matchIndex = remainingTopics.findIndex(savedTopic =>
+          savedTopic.defaultKey === defaultKey ||
+          topicsShareLink(savedTopic, defaultTopic) ||
+          getTopicCompletionKey(savedTopic) === getTopicCompletionKey(defaultTopic)
+        );
+        const savedTopic = matchIndex >= 0 ? remainingTopics.splice(matchIndex, 1)[0] : null;
+
+        return {
+          id: savedTopic ? savedTopic.id : createId(),
+          defaultKey: defaultKey,
+          name: defaultTopic.name,
+          category: defaultTopic.category,
+          description: defaultTopic.description || "",
+          links: defaultTopic.links.slice(),
+          completed: savedTopic ? savedTopic.completed : false
+        };
+      });
+
+      const retiredLegacyDefaults = new Set([
+        "incident response\u0000security",
+        "siem vs soar\u0000security"
+      ]);
+      const customTopics = remainingTopics.filter(topic =>
+        !topic.defaultKey && !retiredLegacyDefaults.has(getTopicCompletionKey(topic))
+      );
+
+      return syncedDefaults.concat(customTopics);
+    }
+
     function cloneDefaults() {
       return DEFAULT_TOPICS.map(topic => ({
         id: createId(),
+        defaultKey: getDefaultTopicKey(topic),
         name: topic.name,
         category: topic.category,
         description: topic.description || "",
@@ -1337,9 +1396,12 @@
           throw new Error("Invalid saved data.");
         }
 
-        topics = parsedTopics.map(normaliseTopic).filter(Boolean);
+        const savedTopicList = parsedTopics.map(normaliseTopic).filter(Boolean);
+        topics = syncTopicsWithDefaults(savedTopicList);
+        saveTopics();
       } catch {
         topics = cloneDefaults();
+        saveTopics();
       }
     }
 
@@ -2100,23 +2162,7 @@
     }
 
     function refreshDefaults() {
-      const confirmed = window.confirm(
-        "Refresh to the latest default topics? Locally added or edited topics will be removed, but completed status for matching topics will be kept."
-      );
-
-      if (!confirmed) return;
-
-      const completedTopicKeys = new Set(
-        topics
-          .filter(topic => topic.completed)
-          .map(getTopicCompletionKey)
-      );
-
-      localStorage.removeItem(TOPICS_STORAGE_KEY);
-      topics = cloneDefaults().map(topic => ({
-        ...topic,
-        completed: completedTopicKeys.has(getTopicCompletionKey(topic))
-      }));
+      topics = syncTopicsWithDefaults(topics);
       rouletteTopicId = null;
       selectedCategory = "All";
       saveTopics();
@@ -2124,7 +2170,7 @@
       renderGameTopics();
       renderRouletteTopic();
       renderAdminTable();
-      showStatus("Latest default topics loaded. Completed status was kept.", "success");
+      showStatus("Defaults synced. Completed status and locally added topics were kept.", "success");
     }
 
     function parseCSV(text) {
