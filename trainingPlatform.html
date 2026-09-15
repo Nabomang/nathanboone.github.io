@@ -919,7 +919,7 @@
           <div class="timer-mode-slider" role="group" aria-label="Timer mode">
             <button id="studyTimerModeButton" class="timer-mode-button active" type="button">Study<span>15 min</span></button>
             <button id="talkNotesTimerModeButton" class="timer-mode-button" type="button">Talk<span>with notes</span></button>
-            <button id="talkNoNotesTimerModeButton" class="timer-mode-button" type="button">Talk<span>no notes</span></button>
+            <button id="talkNoNotesTimerModeButton" class="timer-mode-button" type="button">Talk<span>no notes · 90 sec</span></button>
           </div>
           <div id="timerDisplay" class="timer-display">15:00</div>
           <p id="timerStatus" class="timer-status"></p>
@@ -985,9 +985,9 @@
           <input id="talkMinutesInput" class="timer-setting-input" type="number" min="1" max="240" step="1" />
           <span class="timer-setting-note">min</span>
 
-          <label class="timer-setting-label" for="talkNoNotesMinutesInput">Talk no notes:</label>
-          <input id="talkNoNotesMinutesInput" class="timer-setting-input" type="number" min="1" max="240" step="1" />
-          <span class="timer-setting-note">min</span>
+          <label class="timer-setting-label" for="talkNoNotesSecondsInput">Talk no notes:</label>
+          <input id="talkNoNotesSecondsInput" class="timer-setting-input" type="number" min="1" max="3600" step="1" />
+          <span class="timer-setting-note">sec</span>
           <button id="saveTimerLengthsButton" class="button small secondary" type="button">Update Timers</button>
         </div>
 
@@ -1257,7 +1257,7 @@
 ];
 
     let topics = [];
-    let settings = { studyMinutes: 15, talkMinutes: 2, talkNoNotesMinutes: 2 };
+    let settings = { studyMinutes: 15, talkMinutes: 2, talkNoNotesSeconds: 90 };
     let activeTimerMode = "study";
     let selectedCategory = "All";
     let hideCompletedTopics = false;
@@ -1395,7 +1395,7 @@
           const legacyTimerMinutes = savedSettings.timerMinutes;
           const studyMinutes = savedSettings.studyMinutes;
           const talkMinutes = savedSettings.talkMinutes;
-          const talkNoNotesMinutes = savedSettings.talkNoNotesMinutes;
+          const talkNoNotesSeconds = savedSettings.talkNoNotesSeconds;
 
           if (Number.isInteger(studyMinutes) && studyMinutes >= 1 && studyMinutes <= 240) {
             settings.studyMinutes = studyMinutes;
@@ -1407,14 +1407,12 @@
             settings.talkMinutes = talkMinutes;
           }
 
-          if (Number.isInteger(talkNoNotesMinutes) && talkNoNotesMinutes >= 1 && talkNoNotesMinutes <= 240) {
-            settings.talkNoNotesMinutes = talkNoNotesMinutes;
-          } else {
-            settings.talkNoNotesMinutes = settings.talkMinutes;
+          if (Number.isInteger(talkNoNotesSeconds) && talkNoNotesSeconds >= 1 && talkNoNotesSeconds <= 3600) {
+            settings.talkNoNotesSeconds = talkNoNotesSeconds;
           }
         }
       } catch {
-        settings = { studyMinutes: 15, talkMinutes: 2, talkNoNotesMinutes: 2 };
+        settings = { studyMinutes: 15, talkMinutes: 2, talkNoNotesSeconds: 90 };
       }
 
       remainingSeconds = getActiveTimerMinutes() * 60;
@@ -1426,7 +1424,7 @@
 
     function getActiveTimerMinutes() {
       if (activeTimerMode === "study") return settings.studyMinutes;
-      if (activeTimerMode === "talk-no-notes") return settings.talkNoNotesMinutes;
+      if (activeTimerMode === "talk-no-notes") return settings.talkNoNotesSeconds / 60;
       return settings.talkMinutes;
     }
 
@@ -1815,7 +1813,7 @@
       talkNoNotesButton.classList.toggle("active", activeTimerMode === "talk-no-notes");
       studyButton.innerHTML = `Study<span>${settings.studyMinutes} min</span>`;
       talkNotesButton.innerHTML = `Talk<span>notes · ${settings.talkMinutes} min</span>`;
-      talkNoNotesButton.innerHTML = `Talk<span>no notes · ${settings.talkNoNotesMinutes} min</span>`;
+      talkNoNotesButton.innerHTML = `Talk<span>no notes · ${settings.talkNoNotesSeconds} sec</span>`;
     }
 
     function setTimerMode(mode) {
@@ -1876,20 +1874,20 @@
     function saveTimerLengths() {
       const studyMinutes = Number(document.getElementById("studyMinutesInput").value);
       const talkMinutes = Number(document.getElementById("talkMinutesInput").value);
-      const talkNoNotesMinutes = Number(document.getElementById("talkNoNotesMinutesInput").value);
+      const talkNoNotesSeconds = Number(document.getElementById("talkNoNotesSecondsInput").value);
 
       if (
         !Number.isInteger(studyMinutes) || studyMinutes < 1 || studyMinutes > 240 ||
         !Number.isInteger(talkMinutes) || talkMinutes < 1 || talkMinutes > 240 ||
-        !Number.isInteger(talkNoNotesMinutes) || talkNoNotesMinutes < 1 || talkNoNotesMinutes > 240
+        !Number.isInteger(talkNoNotesSeconds) || talkNoNotesSeconds < 1 || talkNoNotesSeconds > 3600
       ) {
-        showStatus("Enter all timer lengths between 1 and 240 minutes.", "error");
+        showStatus("Use 1–240 minutes for Study and Talk, and 1–3600 seconds for Talk without notes.", "error");
         return;
       }
 
       settings.studyMinutes = studyMinutes;
       settings.talkMinutes = talkMinutes;
-      settings.talkNoNotesMinutes = talkNoNotesMinutes;
+      settings.talkNoNotesSeconds = talkNoNotesSeconds;
       saveSettings();
       resetTimer();
       renderTimerMode();
@@ -2529,7 +2527,7 @@
 
     document.getElementById("studyMinutesInput").value = settings.studyMinutes;
     document.getElementById("talkMinutesInput").value = settings.talkMinutes;
-    document.getElementById("talkNoNotesMinutesInput").value = settings.talkNoNotesMinutes;
+    document.getElementById("talkNoNotesSecondsInput").value = settings.talkNoNotesSeconds;
 
     renderTimerMode();
     renderTimer();
